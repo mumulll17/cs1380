@@ -12,7 +12,7 @@ mkfifo "$p1" "$p2" "$p3"
 bigram() {
 	tee "$1" | tail +2 | paste "$1" - | sort
 	rm "$1"
-}
+  }
 
 trigram() {
 	tee "$1" | tail +2 | paste "$1" - | tee "$2" | cut -f 1 | tail +3 | paste "$2" - | sort
