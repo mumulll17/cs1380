@@ -25,19 +25,37 @@ For example, `execSync(`echo "${input}" | ./c/process.sh`, {encoding: 'utf-8'});
 */
 
 
-const fs = require('fs');
+// const fs = require('fs');
 const {execSync} = require('child_process');
-const path = require('path');
+// const path = require('path');
 
 
 function query(indexFile, args) {
+  const term = args.replace(/\r\n/g, ' ').trim();
+  try {
+    const result = execSync(`grep "${term}" ${indexFile}`, {encoding: 'utf8'});
+    console.log(result.trim()); // Successfully found the term in the file
+  } catch (error) {
+    if (error.status === 1) {
+      // No matches were found
+      console.log('Term not found in the file.');
+    } else {
+      // If the error status is something else, log it as an unexpected error
+      console.error('Error executing grep:', error.message);
+      console.error('stderr:', error.stderr);
+    }
+  }
 }
 
+// 1
 const args = process.argv.slice(2); // Get command-line arguments
 if (args.length < 1) {
   console.error('Usage: ./query.js [query_strings...]');
   process.exit(1);
 }
 
+// 2
+const stemResult = execSync(`echo "${args}" | ./c/process.sh | ./c/stem.js`, {encoding: 'utf-8'}); // process and stem
+
 const indexFile = 'd/global-index.txt'; // Path to the global index file
-query(indexFile, args);
+query(indexFile, stemResult);

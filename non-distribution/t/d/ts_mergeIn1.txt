@@ -1,0 +1,78 @@
+adventur book book | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+adventur book | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+adventur | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+book book book | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+book book brown | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+book book | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+book brown brown | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+book brown | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+book | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+brown brown brown | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+brown brown collect | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+brown brown | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+brown collect cours | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+brown collect | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+brown | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+collect cours cours | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+collect cours | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+collect | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+cours cours cours | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+cours cours csci | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+cours cours | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+cours csci csci | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+cours csci | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+cours | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+csci csci csci | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+csci csci dorian | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+csci csci | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+csci dorian grai | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+csci dorian | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+csci | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+dorian grai holm | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+dorian grai | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+dorian | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+grai holm homer | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+grai holm | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+grai | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+holm homer http | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+holm homer | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+holm | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+homer http http | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+homer http | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+homer | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+http http http | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+http http iliad | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+http http | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+http iliad oscar | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+http iliad | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+http | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+iliad oscar pictur | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+iliad oscar | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+iliad | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+oscar pictur sandbox | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+oscar pictur | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+oscar | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+pictur sandbox sandbox | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+pictur sandbox | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+pictur | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+sandbox sandbox sandbox | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+sandbox sandbox sherlock | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+sandbox sandbox | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+sandbox sherlock static | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+sandbox sherlock | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+sandbox | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+sherlock static static | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+sherlock static | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+sherlock | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+static static static | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+static static txt | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+static static | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+static txt txt | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+static txt | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+static | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+txt txt txt | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+txt txt wild | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+txt txt | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+txt wild | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+txt | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
+wild | 1 | https://cs.brown.edu/courses/csci1380/sandbox/2
