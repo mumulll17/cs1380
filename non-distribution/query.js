@@ -31,9 +31,11 @@ const {execSync} = require('child_process');
 
 
 function query(indexFile, args) {
-  const term = args.replace(/\r\n/g, ' ').trim();
+  const term = args.split('\n');
   try {
-    const result = execSync(`grep "${term}" ${indexFile}`, {encoding: 'utf8'});
+    const data = fs.readFileSync(indexFile, 'utf8');
+    const lines = data.split('\n');
+    const result = lines.filter(line =>terms.every(term => line.includes(term)));
     console.log(result.trim()); // Successfully found the term in the file
   } catch (error) {
     if (error.status === 1) {
