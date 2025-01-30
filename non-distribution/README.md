@@ -75,7 +75,7 @@ To characterize correctness, we developed `<eight tests>` that test the followin
 
 *Performance*: The throughput of various subsystems is described in the `"throughput"` portion of package.json. The characteristics of my development machines are summarized in the `"dev"` portion of package.json.
 
-Just to add on the performance, the throughput is for unit per second. I tested it with one file called test_throughput. This single file run the whole pipeline on 10 urls in total. For crawl, it took 7.705 seconds to crawl 10 urls. For index, it took 31.739 seoconds to index 10 urls. For queryI query 9 sets of terms in 2.697 seconds. The only slower element is the index, and it makes sense because when the global_index gets larger, it takes more time to merge.
+Just to add on the performance, the throughput is for unit per second. I tested it with one file called test_throughput. This single file run the whole pipeline on 10 urls in total. Local result is as following. For crawl, it took 7.705 seconds to crawl 10 urls. For index, it took 31.739 seoconds to index 10 urls. For queryI query 9 sets of terms in 2.697 seconds. On the cloud, it took 8.023 second to crawl 10 urls, 6.12 seconds to index 10 urls, and 3 seconds to query 9 sets of terms.
 
 ## Wild Guess
 
