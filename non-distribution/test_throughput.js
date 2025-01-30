@@ -16,13 +16,7 @@ const urlsToTest = [
   'https://cs.brown.edu/courses/csci1380/sandbox/1/level_1b/fact_3/index.html',
   'https://cs.brown.edu/courses/csci1380/sandbox/1/level_1b/fact_4/index.html',
   'https://cs.brown.edu/courses/csci1380/sandbox/1/level_1c/fact_5/index.html',
-  'https://cs.brown.edu/courses/csci1380/sandbox/1/level_1c/fact_6/index.html',
-  'https://cs.brown.edu/courses/csci1380/sandbox/2/',
-  'https://cs.brown.edu/courses/csci1380/sandbox/2/static/book1.txt',
-  'https://cs.brown.edu/courses/csci1380/sandbox/2/static/book2.txt',
-  'https://cs.brown.edu/courses/csci1380/sandbox/2/static/book3.txt',
-  'https://cs.brown.edu/courses/csci1380/sandbox/3/',
-];
+  'https://cs.brown.edu/courses/csci1380/sandbox/1/level_1c/fact_6/index.html',]
 const terms = [
   'centuri instanc',
   'check stuff',
