@@ -5,7 +5,7 @@
  Usage: ./combine.js <terms > n-grams
 */
 
-const readline = require("readline");
+const readline = require('readline');
 
 // Function to create bigrams
 function bigrams(input) {
@@ -25,27 +25,25 @@ function trigrams(input) {
   return result.sort();
 }
 
-// Function to process the input and generate n-grams
-async function processInput() {
-  const lines = [];
+const lines = [];
 
-  // Read input line by line
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-    terminal: false
-  });
+// Read input line by line
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  terminal: false,
+});
 
-  for await (const line of rl) {
-    lines.push(...line.trim().split(/\s+/)); // Split each line into words
-  }
-  // Generate unigrams, bigrams, and trigrams
-  
+rl.on('line', (line)=>{
+  lines.push(...line.trim().split(/\s+/));
+});
+// Generate unigrams, bigrams, and trigrams
+
+rl.on('close', ()=>{
   const unigrams = [...lines].sort();
   const bigramResult = bigrams(lines);
   const trigramResult = trigrams(lines);
-
   const result = unigrams.join('\n').trim() + '\n' + bigramResult.join('\n').trim() + '\n' + trigramResult.join('\n').trim();
   console.log(result);
-}
-processInput();
+});
+

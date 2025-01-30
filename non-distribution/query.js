@@ -25,18 +25,18 @@ For example, `execSync(`echo "${input}" | ./c/process.sh`, {encoding: 'utf-8'});
 */
 
 
-// const fs = require('fs');
+const fs = require('fs');
 const {execSync} = require('child_process');
 // const path = require('path');
 
 
 function query(indexFile, args) {
-  const term = args.split('\n');
+  const terms = args.split('\n');
   try {
     const data = fs.readFileSync(indexFile, 'utf8');
     const lines = data.split('\n');
-    const result = lines.filter(line =>terms.every(term => line.includes(term)));
-    console.log(result.trim()); // Successfully found the term in the file
+    const result = lines.filter((line) =>terms.every((term) => line.includes(term)));
+    console.log(result.join('\n').trim()); // Successfully found the term in the file
   } catch (error) {
     if (error.status === 1) {
       // No matches were found

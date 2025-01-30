@@ -1,0 +1,7 @@
+WELCOME TO CS1380 SIMPLE LINKS
+
+Check out fact 5 [fact_5/index.html].
+
+Check out fact 6 [fact_6/index.html].
+
+© 2023 CS1380. All rights reserved.

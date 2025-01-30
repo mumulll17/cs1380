@@ -1,0 +1,18 @@
+INTERESTING FACT B
+
+Quantum computers represent a significant leap from traditional computing.
+Unlike classical computers, which use bits as the basic unit of information
+(which can be either a 0 or a 1), quantum computers use quantum bits, or qubits.
+What makes qubits extraordinary is their ability to exist in multiple states
+simultaneously, thanks to the principles of quantum superposition. This means a
+quantum computer can process a vast number of calculations at once, potentially
+solving problems in minutes that would take classical computers thousands of
+years. Quantum computing has the potential to revolutionize fields like
+cryptography, material science, and complex system simulation. However, building
+and maintaining a stable quantum computer is incredibly challenging, as qubits
+are highly sensitive to environmental interference. The development of practical
+and scalable quantum computers is one of the cutting-edge pursuits in modern
+technology, promising to unlock new capabilities in computing power and
+efficiency.
+
+© 2023 CS1380. All rights reserved.
