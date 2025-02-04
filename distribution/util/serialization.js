@@ -49,13 +49,14 @@ function serialize(object) {
   }
   else if (type == 'function'){
     for (let key in builtInObjects){ //if it is native
-
-        if (Object.values(builtInObjects[key]).includes(object)){
-          const serialized = {
-            type : "native",
-            value : `${key}.${object.name}` 
+        for (let key2 in builtInObjects[key]){
+          if (builtInObjects[key][key2] == object){
+            const serialized = {
+              type : "native",
+              value : `${key}.${key2}` 
+            }
+            return JSON.stringify(serialized);
           }
-          return JSON.stringify(serialized);
         }
     }
       const serialized = {

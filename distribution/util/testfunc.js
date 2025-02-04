@@ -2,7 +2,7 @@ const { assert } = require('console');
 const distribution = require('../../config.js');
 const builtinLibs = require('repl')._builtinLibs
 const util = distribution.util;
-const fs = require('fs');
+const os = require('os');
 
 // const x = { a: 1, b: 2, c: 3};
 // x.self = x;
@@ -22,10 +22,8 @@ const fs = require('fs');
 // const deserialized = util.deserialize(serialized);
 // console.log(serialized)
 // console.log(deserialized)
-const object = function f() {
-    return "Hello World";
-  };
-const serialized = distribution.util.serialize(object);
+const x = os.type;
+const serialized = distribution.util.serialize(x);
 const deserialized = distribution.util.deserialize(serialized);
 
 console.log(serialized)
