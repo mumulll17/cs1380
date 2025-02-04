@@ -79,3 +79,29 @@ distribution.all.comm.send(['sid'], {node: node, service: 'status', method: 'get
 # Results and Reflections
 
 > ...
+
+# M1: Serialization / Deserialization
+
+
+## Summary
+
+> Summarize your implementation, including key challenges you encountered. Remember to update the `report` section of the `package.json` file with the total number of hours it took you to complete each task of M1 (`hours`) and the lines of code per task.
+
+
+My implementation comprises `one` software components, totaling `about 250` lines of code. Key challenges included `1. serialization and deserialization of objects, I solved it by including recursion in them. The second challenge is the first extra credit, which requires us to support cycles in object, and I solved it with adding a new field called id and a map. I used the map to find the cycle and the id to find which refer to which when deserializing`.
+
+I have done all extra credits. They are all included in the distribution/util/serialization.js file. 
+
+
+## Correctness & Performance Characterization
+
+
+> Describe how you characterized the correctness and performance of your implementation
+
+
+*Correctness*: I wrote `11` tests; these tests take `6.365 seconds` to execute. This includes objects with `test of int, string, boolean, null, undefined, function, object/array, error, date, native functions, cycle object`.
+
+
+*Performance*: The latency of various subsystems is described in the `"latency"` portion of package.json. The characteristics of my development machines are summarized in the `"dev"` portion of package.json.
+
+Note: the latency is second per object for the whole process.

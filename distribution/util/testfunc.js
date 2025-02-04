@@ -22,9 +22,12 @@ const fs = require('fs');
 // const deserialized = util.deserialize(serialized);
 // console.log(serialized)
 // console.log(deserialized)
-let original = assert.apply
-const serialized = util.serialize(original);
-const deserialized = util.deserialize(serialized);
+const object = function f() {
+    return "Hello World";
+  };
+const serialized = distribution.util.serialize(object);
+const deserialized = distribution.util.deserialize(serialized);
+
 console.log(serialized)
 console.log(deserialized)
 // const avoidArr = ['crypto', 'punycode', 'sys', 'wasi']
