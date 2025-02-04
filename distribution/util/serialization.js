@@ -12,10 +12,18 @@
     9. Serialize circular objects and arrays v
     10. Serialize native functions v
 */
+const builtinLibs = require('repl')._builtinLibs
+const avoidArr = ['crypto', 'punycode', 'sys', 'wasi']
+const builtInObjects = builtinLibs.reduce((acc, lib) => {
+  if (!avoidArr.includes(lib)){
+      const obj = require(lib);
+      acc[lib] = obj;
+  }
+  return acc;
+}, {});  
 
-const { parse, parsed } = require("yargs");
-
-
+const map = new Map();
+let uniqueId = 0;
 function serialize(object) {
   const type = typeof object;
   if (type == "number" || type == "string" || type == "boolean"){
@@ -40,11 +48,22 @@ function serialize(object) {
     return JSON.stringify(serialized);
   }
   else if (type == 'function'){
-    const serialized = {
-      type : "function",
-      value : object.toString()
+    for (let key in builtInObjects){ //if it is native
+
+        if (Object.values(builtInObjects[key]).includes(object)){
+          const serialized = {
+            type : "native",
+            value : `${key}.${object.name}` 
+          }
+          return JSON.stringify(serialized);
+        }
     }
-    return JSON.stringify(serialized);
+      const serialized = {
+        type : "function",
+        value : object.toString()
+      }
+      return JSON.stringify(serialized);
+
   }
   // if it is an array
   else if (Array.isArray(object)){
@@ -72,6 +91,16 @@ function serialize(object) {
     return JSON.stringify(serialized)
   }
   else if (type === "object") {
+    if (map.has(object)){
+      return JSON.stringify({
+        type : "object",
+        value : "",
+        id : map.get(object),
+      })
+    }
+    let curId = uniqueId;
+    map.set(object, curId);
+    uniqueId++;
     let serializedObject = {};
     for (const key in object) {
       if (object.hasOwnProperty(key)) {
@@ -81,11 +110,10 @@ function serialize(object) {
     }
     return JSON.stringify({
       type: "object",
-      value: serializedObject // Stringify the whole serialized object
+      value: serializedObject, // Stringify the whole serialized object,
+      id: curId,
     });
   }
-
-
 }
 
 
@@ -116,6 +144,11 @@ function deserialize(string) {
     return g;
   }
   if (parsedString.type == "object"){
+    let curId = parsedString.id
+    if (map.has(curId)){
+      return map.get(curId);
+    }
+    map.set(curId,parsedString.value)
     let oriObject = parsedString.value;
     for (const key in oriObject){
       if (oriObject.hasOwnProperty(key)) {
@@ -142,7 +175,12 @@ function deserialize(string) {
     let dateObject = new Date(parsedString.value);
     return dateObject;
   }
-
+  if (parsedString.type == "native"){
+    let words = parsedString.value.split('.');
+    let root = words[0];
+    let child = words[1]
+    return builtInObjects[root][child]
+  }
 }
 
 module.exports = {

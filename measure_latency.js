@@ -27,6 +27,7 @@ const objectArr = [
     true,
     false,
     [27, null, undefined, 'string', true, false, {}, []],
+    [1, 2, 46343, 4, 523423,7596],
 ];
 
 let totalTime = 0;
