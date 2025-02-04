@@ -95,5 +95,5 @@ test('m1: native object test', () => {
   const serialized = distribution.util.serialize(x);
   const deserialized = distribution.util.deserialize(serialized);
 
-  expect(deserialized).toEqual(x);
+  expect(deserialized).toBe(x);
 });
