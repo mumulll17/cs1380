@@ -30,6 +30,7 @@ if (args.port) {
 
 if (args.config) {
   const nodeConfig = util.deserialize(args.config);
+  console.log(nodeConfig);
   global.nodeConfig.ip = nodeConfig.ip ? nodeConfig.ip : global.nodeConfig.ip;
   global.nodeConfig.port = nodeConfig.port ?
         nodeConfig.port : global.nodeConfig.port;

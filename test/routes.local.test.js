@@ -5,6 +5,7 @@ const routes = distribution.local.routes;
 
 test('(4 pts) local.routes.get(status)', (done) => {
   const status = local.status;
+  
 
   local.routes.get('status', (e, v) => {
     try {

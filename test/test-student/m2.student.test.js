@@ -7,10 +7,29 @@
 */
 
 const distribution = require('../../config.js');
+const local = distribution.local;
+const id = distribution.util.id;
 
-test('(1 pts) student test', (done) => {
+test('(1 pts) student test (put->get)', (done) => {
   // Fill out this test case...
-    done(new Error('Not implemented'));
+  const node = distribution.node.config;
+  const addService = {};
+
+  addService.add = (a,b) => {
+    return a+b;
+  };
+
+  local.routes.put(addService, 'add', (e, v) => {
+    local.routes.get('add', (e, v) => {
+      try {
+        expect(e).toBeFalsy();
+        expect(v.add(2,3)).toBe(5);
+        done();
+      } catch (error) {
+        done(error);
+      }
+    });
+  });
 });
 
 

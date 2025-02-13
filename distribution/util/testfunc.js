@@ -1,9 +1,12 @@
-const { assert } = require('console');
+// const { assert } = require('console');
 const distribution = require('../../config.js');
 const builtinLibs = require('repl')._builtinLibs
 const util = distribution.util;
 const os = require('os');
 
+const a = { ip: "127.0.0.1", port: 1234};
+const serialized = util.serialize(a);
+console.log(serialized);
 // const x = { a: 1, b: 2, c: 3};
 // x.self = x;
 // const serialized = util.serialize(x);
@@ -22,12 +25,7 @@ const os = require('os');
 // const deserialized = util.deserialize(serialized);
 // console.log(serialized)
 // console.log(deserialized)
-const x = os.type;
-const serialized = distribution.util.serialize(x);
-const deserialized = distribution.util.deserialize(serialized);
 
-console.log(serialized)
-console.log(deserialized)
 // const avoidArr = ['crypto', 'punycode', 'sys', 'wasi']
 // const builtInObjects = builtinLibs.reduce((acc, lib) => {
 //     if (!avoidArr.includes(lib)){

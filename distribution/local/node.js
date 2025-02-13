@@ -1,7 +1,8 @@
 const http = require('http');
 const url = require('url');
 const log = require('../util/log');
-
+const serialization = require('../util/serialization');
+const routes = require('./routes');
 
 /*
     The start function will be called to start your node.
@@ -13,19 +14,21 @@ const log = require('../util/log');
 const start = function(callback) {
   const server = http.createServer((req, res) => {
     /* Your server will be listening for PUT requests. */
-
-    // Write some code...
-
-
+    if (req.method === 'PUT'){
     /*
       The path of the http request will determine the service to be used.
       The url will have the form: http://node_ip:node_port/service/method
     */
-
-
-    // Write some code...
-
-
+      const words = req.url.split('/').filter(Boolean);
+      if (words.length < 3 || words[0] !== 'local') {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(serialization.serialize({ error: 'Invalid URL format' }));
+          return;
+      }
+      
+      const service = words[1]; // service name
+      const method = words[2];  // method name
+      
     /*
 
       A common pattern in handling HTTP requests in Node.js is to have a
@@ -40,19 +43,38 @@ const start = function(callback) {
 
       Our nodes expect data in JSON format.
   */
-
-    // Write some code...
-
-
+    let body = '';
+    req.on('data', (chunk) => {
+      body += chunk;
+    });
+    req.on('end',()=>{
+      let deserialized = serialization.deserialize(body);
+      if (!(deserialized instanceof Array)){ //if it is not an object
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(serialization.serialize(Error('Invalid Object')));
+      }
       /* Here, you can handle the service requests. */
 
-      // Write some code...
-
       const serviceName = service;
+      routes.get(serviceName, (e, service) => {
+        if (e != null) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+            return res.end(serialization.serialize(e)); // Ensure only one res.end() call
+        }
+        const result = service[method](...deserialized,(e,v)=>{
+          if (e != null) {
+            console.log(e);
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            return res.end(serialization.serialize(e)); // Ensure only one res.end() call
+          }
+          res.end(serialization.serialize(v));
+        });
+    });
+    
 
+    })
+    }
 
-
-        // Write some code...
 
   });
 
@@ -67,18 +89,17 @@ const start = function(callback) {
     At some point, we'll be adding the ability to stop a node
     remotely through the service interface.
   */
-
   server.listen(global.nodeConfig.port, global.nodeConfig.ip, () => {
     log(`Server running at http://${global.nodeConfig.ip}:${global.nodeConfig.port}/`);
     global.distribution.node.server = server;
     callback(server);
   });
-
   server.on('error', (error) => {
     // server.close();
     log(`Server error: ${error}`);
     throw error;
   });
+
 };
 
 module.exports = {
