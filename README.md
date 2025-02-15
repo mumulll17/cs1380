@@ -105,3 +105,32 @@ I have done all extra credits. They are all included in the distribution/util/se
 *Performance*: The latency of various subsystems is described in the `"latency"` portion of package.json. The characteristics of my development machines are summarized in the `"dev"` portion of package.json.
 
 Note: the latency is second per object for the whole process.
+
+
+# M2: Actors and Remote Procedure Calls (RPC)
+
+
+## Summary
+
+> Summarize your implementation, including key challenges you encountered. Remember to update the `report` section of the `package.json` file with the total number of hours it took you to complete each task of M2 (`hours`) and the lines of code per task.
+
+
+My implementation comprises `4` software components, totaling `400` lines of code. Key challenges included `The hardest part of this project is comm send and the node.js. I solved it by sending a http put request to the remote node with all options and serialized message. When it got to the remote node, I would process the path to get service and method, and finally read the message to get what arguments it will be. The next hardest part is rpc, I have met many bugs in this extra credit, and I finally fixed them by moving the replacement code that replace node_info to real node information to the createRPC from comm.send`.
+
+
+## Correctness & Performance Characterization
+
+> Describe how you characterized the correctness and performance of your implementation
+
+
+*Correctness*: I wrote `<5>` tests; these tests take `<6.754 seconds>` to execute.
+
+
+*Performance*: I characterized the performance of comm and RPC by sending 1000 service requests in a tight loop. Average throughput and latency is recorded in `package.json`.
+They are in the entry called latency_comm_send and throughput_comm_send. Their unit is based on millisecond.
+
+## Key Feature
+
+> How would you explain the implementation of `createRPC` to someone who has no background in computer science — i.e., with the minimum jargon possible?
+
+The createRPC is the code that takes a function in and gives you a function that allow somebody else from a remote computer to run your function on your computer. And it also allows you to send the result back to the other user.

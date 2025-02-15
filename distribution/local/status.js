@@ -1,5 +1,4 @@
 const id = require('../util/id');
-const log = require('../util/log');
 
 const status = {};
 

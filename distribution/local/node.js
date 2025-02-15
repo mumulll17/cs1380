@@ -1,5 +1,4 @@
 const http = require('http');
-const url = require('url');
 const log = require('../util/log');
 const serialization = require('../util/serialization');
 const routes = require('./routes');
@@ -55,22 +54,16 @@ const start = function(callback) {
       /* Here, you can handle the service requests. */
 
       const serviceName = service;
-      console.log(serviceName);
       routes.get(serviceName, (e, service) => {
-        console.log("error is");
-        console.log(e);
         if (e != null) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
             return res.end(serialization.serialize(e)); // Ensure only one res.end() call
         }
           const result = service[method](...deserialized,(e,v)=>{
-            console.log("!!!");
             if (e != null) {
               res.writeHead(400, { 'Content-Type': 'application/json' });
               return res.end(serialization.serialize(e)); // Ensure only one res.end() call
             }
-            console.log(v);
-            console.log(111);
             res.end(serialization.serialize(v));
           });
     });

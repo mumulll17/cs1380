@@ -1,5 +1,4 @@
 const log = require('../util/log');
-const comm = require('../local/comm')
 const crypto = require("crypto");
 const serialization = require('./serialization');
 // const distribution = require('../../config.js');
@@ -22,7 +21,6 @@ function createRPC(func) {
   }
   let serialized = serialization.serialize(g);
   let repalced = serialized.replace("'__NODE_INFO__'",JSON.stringify(config).replaceAll('"',"'")).replace("__hash__",hash);
-  console.trace(repalced);
   let deserialized = serialization.deserialize(repalced);
   return deserialized;
 }

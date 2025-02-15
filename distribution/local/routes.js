@@ -50,7 +50,7 @@ function rem(configuration, callback) {
         callback(null, a);
         return;
     }
-    callback(new Error("Service not found"));
+    callback(null,null);
 };
 
 module.exports = {get, put, rem};

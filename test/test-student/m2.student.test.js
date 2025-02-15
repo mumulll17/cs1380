@@ -30,9 +30,8 @@ test('(1 pts) student test (routes put get rem)', (done) => {
   });
   local.routes.rem('nothing', (e,v)=>{
     try {
-      expect(e).toBeTruthy();
-      expect(e).toBeInstanceOf(Error);
-      expect(v).toBeFalsy();
+      expect(e).toBeFalsy();;
+      expect(v).toBe(null);
       done();
     } catch (error) {
       done(error);
@@ -114,4 +113,20 @@ test('(1 pts) student test', (done) => {
       done(error);
     }
   });
+});
+
+/* Test infrastructure */
+
+let localServer = null;
+
+beforeAll((done) => {
+  distribution.node.start((server) => {
+    localServer = server;
+    done();
+  });
+});
+
+afterAll((done) => {
+  localServer.close();
+  done();
 });
