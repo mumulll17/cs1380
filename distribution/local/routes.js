@@ -2,7 +2,7 @@
 const status = require("./status");
 // const routes = require("./routes");
 const comm = require("./comm");
-
+const wire = require("../util/wire");
 const services = {
     status,
     comm,
@@ -18,8 +18,11 @@ function get(configuration, callback) {
     if (services.hasOwnProperty(configuration)) {
         callback(null, services[configuration]);
         return;
+    } else if (wire.toLocal.hasOwnProperty(configuration)){ // if it is rpc
+        callback(null, wire.toLocal[configuration]);
+        return;
     }
-    callback(new Error('Service not found'));
+    callback(new Error(`Service ${configuration} not found`));
 }
 
 /**
@@ -42,8 +45,9 @@ function put(service, configuration, callback) {
  */
 function rem(configuration, callback) {
     if (services.hasOwnProperty(configuration)) {
+        let a = services[configuration];
         delete services[configuration];
-        callback(null, true);
+        callback(null, a);
         return;
     }
     callback(new Error("Service not found"));

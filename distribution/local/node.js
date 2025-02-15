@@ -10,7 +10,6 @@ const routes = require('./routes');
     After your node has booted, you should call the callback.
 */
 
-
 const start = function(callback) {
   const server = http.createServer((req, res) => {
     /* Your server will be listening for PUT requests. */
@@ -28,7 +27,6 @@ const start = function(callback) {
       
       const service = words[1]; // service name
       const method = words[2];  // method name
-      
     /*
 
       A common pattern in handling HTTP requests in Node.js is to have a
@@ -49,26 +47,32 @@ const start = function(callback) {
     });
     req.on('end',()=>{
       let deserialized = serialization.deserialize(body);
-      if (!(deserialized instanceof Array)){ //if it is not an object
+      // console.log(deserialized);
+      if (!(deserialized instanceof Array)){ //if it is not an array
         res.writeHead(400, { 'Content-Type': 'application/json' });
         res.end(serialization.serialize(Error('Invalid Object')));
       }
       /* Here, you can handle the service requests. */
 
       const serviceName = service;
+      console.log(serviceName);
       routes.get(serviceName, (e, service) => {
+        console.log("error is");
+        console.log(e);
         if (e != null) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
             return res.end(serialization.serialize(e)); // Ensure only one res.end() call
         }
-        const result = service[method](...deserialized,(e,v)=>{
-          if (e != null) {
-            console.log(e);
-            res.writeHead(400, { 'Content-Type': 'application/json' });
-            return res.end(serialization.serialize(e)); // Ensure only one res.end() call
-          }
-          res.end(serialization.serialize(v));
-        });
+          const result = service[method](...deserialized,(e,v)=>{
+            console.log("!!!");
+            if (e != null) {
+              res.writeHead(400, { 'Content-Type': 'application/json' });
+              return res.end(serialization.serialize(e)); // Ensure only one res.end() call
+            }
+            console.log(v);
+            console.log(111);
+            res.end(serialization.serialize(v));
+          });
     });
     
 

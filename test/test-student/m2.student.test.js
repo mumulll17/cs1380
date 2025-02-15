@@ -10,9 +10,8 @@ const distribution = require('../../config.js');
 const local = distribution.local;
 const id = distribution.util.id;
 
-test('(1 pts) student test (put->get)', (done) => {
+test('(1 pts) student test (routes put get rem)', (done) => {
   // Fill out this test case...
-  const node = distribution.node.config;
   const addService = {};
 
   addService.add = (a,b) => {
@@ -24,32 +23,95 @@ test('(1 pts) student test (put->get)', (done) => {
       try {
         expect(e).toBeFalsy();
         expect(v.add(2,3)).toBe(5);
-        done();
       } catch (error) {
         done(error);
       }
     });
   });
+  local.routes.rem('nothing', (e,v)=>{
+    try {
+      expect(e).toBeTruthy();
+      expect(e).toBeInstanceOf(Error);
+      expect(v).toBeFalsy();
+      done();
+    } catch (error) {
+      done(error);
+    }
+  })
 });
 
 
-test('(1 pts) student test', (done) => {
-  // Fill out this test case...
-    done(new Error('Not implemented'));
+test('(1 pts) student test (routes put get rem)', (done) => {
+  const addService = {};
+
+  addService.add = (a,b) => {
+    return a+b;
+  };
+
+  local.routes.put(addService, 'add', (e, v) => {
+    local.routes.get('add', (e, v) => {
+      try {
+        expect(e).toBeFalsy();
+        expect(v.add(2,3)).toBe(5);
+      } catch (error) {
+        done(error);
+      }
+    });
+  });
+  local.routes.rem('add', (e,v)=>{
+    try {
+      expect(e).toBeFalsy();
+      expect(v).toBe(addService);
+      done();
+    } catch (error) {
+      done(error);
+    }
+  })
 });
 
 
-test('(1 pts) student test', (done) => {
-  // Fill out this test case...
-    done(new Error('Not implemented'));
+test('(1 pts) student test (status get)', (done) => {
+  local.status.get('nothing', (e, v) => {
+    try {
+      expect(e).toBeTruthy();
+      expect(e).toBeInstanceOf(Error);
+      expect(v).toBeFalsy();
+      done();
+    } catch (error) {
+      done(error);
+    }
+  });
+});
+
+test('(1 pts) student test (comm send status get)', (done) => {
+  const node = distribution.node.config;
+  const remote = {node: node, service: 'status', method: 'get'};
+  const message = ['ip'];
+
+  local.comm.send(message, remote, (e, v) => {
+    try {
+      expect(e).toBeFalsy();
+      expect(v).toBe(node.ip);
+      done();
+    } catch (error) {
+      done(error);
+    }
+  });
 });
 
 test('(1 pts) student test', (done) => {
-  // Fill out this test case...
-    done(new Error('Not implemented'));
-});
+  const node = distribution.node.config;
+  const remote = {node: node, service: 'routes', method: 'get'};
+  const message = ['what'];
 
-test('(1 pts) student test', (done) => {
-  // Fill out this test case...
-    done(new Error('Not implemented'));
+  local.comm.send(message, remote, (e, v) => {
+    try {
+      expect(e).toBeTruthy();
+      expect(e).toBeInstanceOf(Error);
+      expect(v).toBeFalsy();
+      done();
+    } catch (error) {
+      done(error);
+    }
+  });
 });

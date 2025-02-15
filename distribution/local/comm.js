@@ -3,7 +3,6 @@
 const http = require('node:http');
 const serialization = require("../util/serialization");
 const { options } = require("yargs");
-
 /**
  * @typedef {Object} Target
  * @property {string} service
@@ -52,7 +51,7 @@ function send(message, remote, callback = () => {}) {
     });
 
     req.on('error', (err) => {
-        console.log(111);
+        console.log(1111);
         callback(err);
     });
     req.write(serializedMsg);

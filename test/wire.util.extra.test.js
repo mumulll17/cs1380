@@ -1,5 +1,7 @@
 const distribution = require('../config.js');
 
+
+
 test('(25 pts) rpc', (done) => {
   let localVar = 0;
 
@@ -15,6 +17,7 @@ test('(25 pts) rpc', (done) => {
   };
 
   distribution.local.routes.put(addOneService, 'rpcService', (e, v) => {
+    console.trace(addOneRPC);
     // Call the RPC stub locally
     addOneRPC((e, v) => {
       try {

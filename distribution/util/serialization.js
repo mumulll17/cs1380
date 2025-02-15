@@ -24,106 +24,120 @@ const builtInObjects = builtinLibs.reduce((acc, lib) => {
 
 const map = new Map();
 let uniqueId = 0;
+let depthCounter = 0;
 function serialize(object) {
-  const type = typeof object;
-  if (type == "number" || type == "string" || type == "boolean"){
-    const serialized = {
-      type : type,
-      value : object.toString()
-    }
-    return JSON.stringify(serialized);
-  } 
-  else if (type == "undefined"){
-    const serialized = {
-      type : type,
-      value : "undefined",
-    }
-    return JSON.stringify(serialized);
-  }
-  else if (object == null){
-    const serialized = {
-      type : "null",
-      value : "null",
-    }
-    return JSON.stringify(serialized);
-  }
-  else if (type == 'function'){
-    for (let key in builtInObjects){ //if it is native
-        for (let key2 in builtInObjects[key]){
-          if (builtInObjects[key][key2] == object){
-            const serialized = {
-              type : "native",
-              value : `${key}.${key2}` 
-            }
-            return JSON.stringify(serialized);
-          }
-        }
-    }
+  depthCounter++; // Entering serialization
+  try{
+    const type = typeof object;
+    if (type == "number" || type == "string" || type == "boolean"){
       const serialized = {
-        type : "function",
+        type : type,
         value : object.toString()
       }
       return JSON.stringify(serialized);
-
-  }
-  // if it is an array
-  else if (Array.isArray(object)){
-    let serializedArr = {};
-    for (let i = 0; i<object.length; i++){
-      serializedArr[`${i}`] = serialize(object[i]);
+    } 
+    else if (type == "undefined"){
+      const serialized = {
+        type : type,
+        value : "undefined",
+      }
+      return JSON.stringify(serialized);
     }
-    return JSON.stringify({
-      type: "array",
-      value: serializedArr,
-    })
-  }
-  else if (object instanceof Error){
-    const serialized = {
-      type : "error",
-      value : object.message,
+    else if (object == null){
+      const serialized = {
+        type : "null",
+        value : "null",
+      }
+      return JSON.stringify(serialized);
     }
-    return JSON.stringify(serialized);
-  }
-  else if (object instanceof Date){
-    const serialized = {
-      type : 'date',
-      value : object.toISOString()
+    else if (type == 'function'){
+      for (let key in builtInObjects){ //if it is native
+          for (let key2 in builtInObjects[key]){
+            if (builtInObjects[key][key2] == object){
+              const serialized = {
+                type : "native",
+                value : `${key}.${key2}` 
+              }
+              return JSON.stringify(serialized);
+            }
+          }
+      }
+        const serialized = {
+          type : "function",
+          value : object.toString()
+        }
+        return JSON.stringify(serialized);
+  
     }
-    return JSON.stringify(serialized)
-  }
-  else if (type === "object") {
-    if (map.has(object)){
+    // if it is an array
+    else if (Array.isArray(object)){
+      let serializedArr = {};
+      for (let i = 0; i<object.length; i++){
+        serializedArr[`${i}`] = serialize(object[i]);
+      }
       return JSON.stringify({
-        type : "object",
-        value : "",
-        id : map.get(object),
+        type: "array",
+        value: serializedArr,
       })
     }
-    let curId = uniqueId;
-    map.set(object, curId);
-    uniqueId++;
-    let serializedObject = {};
-    for (const key in object) {
-      if (object.hasOwnProperty(key)) {
-        // Serialize the value and make sure it's turned into a string
-        serializedObject[key] = serialize(object[key]);
+    else if (object instanceof Error){
+      const serialized = {
+        type : "error",
+        value : object.message,
       }
+      return JSON.stringify(serialized);
     }
-    return JSON.stringify({
-      type: "object",
-      value: serializedObject, // Stringify the whole serialized object,
-      id: curId,
-    });
+    else if (object instanceof Date){
+      const serialized = {
+        type : 'date',
+        value : object.toISOString()
+      }
+      return JSON.stringify(serialized)
+    }
+    else if (type === "object") {
+      if (map.has(object)){
+        return JSON.stringify({
+          type : "object",
+          value : "",
+          id : map.get(object),
+        })
+      }
+      let curId = uniqueId;
+      map.set(object, curId);
+      uniqueId++;
+      let serializedObject = {};
+      for (const key in object) {
+        if (object.hasOwnProperty(key)) {
+          // Serialize the value and make sure it's turned into a string
+          serializedObject[key] = serialize(object[key]);
+        }
+      }
+      return JSON.stringify({
+        type: "object",
+        value: serializedObject, // Stringify the whole serialized object,
+        id: curId,
+      });
+    }    
+  }finally{
+    depthCounter--;
+    if (depthCounter === 0) {
+      map.clear();
+      uniqueId = 0;
+    }
   }
+
+
 }
 
 
 function deserialize(string) {
+  depthCounter++; // Entering serialization
+  try{
   const parsedString = JSON.parse(string)
   if (parsedString.type == "number"){
     return Number(parsedString.value);
   }
-  if (parsedString.type == "string"){
+   if (parsedString.type == "string"){
     return parsedString.value;
   }
   if (parsedString.type == "boolean"){
@@ -182,6 +196,13 @@ function deserialize(string) {
     let child = words[1]
     return builtInObjects[root][child]
   }
+}finally{
+  depthCounter--;
+  if (depthCounter === 0) {
+    map.clear();
+    uniqueId = 0;
+  }
+}
 }
 
 module.exports = {

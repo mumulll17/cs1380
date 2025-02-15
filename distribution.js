@@ -76,6 +76,8 @@ distribution['all'].store =
 distribution.node.config = global.nodeConfig;
 module.exports = global.distribution;
 
+global.nodeConfig2 = JSON.parse(JSON.stringify(global.nodeConfig));
+
 /* The following code is run when distribution.js is run directly */
 if (require.main === module) {
   log(`[node] Starting node with configuration: ${JSON.stringify(global.nodeConfig)}`);
