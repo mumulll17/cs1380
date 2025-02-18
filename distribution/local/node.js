@@ -79,8 +79,6 @@ const start = function(callback) {
   });
 
 
-  // Write some code...
-
   /*
     Your server will be listening on the port and ip specified in the config
     You'll be calling the `callback` callback when your server has successfully
