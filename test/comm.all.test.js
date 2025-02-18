@@ -75,11 +75,6 @@ test('(2 pts) all.comm.send(status.get(random))', (done) => {
     }
   });
 });
-
-test.only('',(done)=>{
-done();
-})
-
 beforeAll((done) => {
   // First, stop the nodes if they are running
   const remote = {service: 'status', method: 'stop'};

@@ -39,19 +39,19 @@ function get(configuration, callback) {
         callback(null, services[configuration]);
         return;
     }
-    else{
-        const rpc = global.toLocal[configuration];
-        if (rpc) {
-             callback(null, { call: rpc });
-         } else {
-             callback(new Error(`Service ${configuration} not found!`));
-          }
-      }
-    //  else if (wire.toLocal.hasOwnProperty(configuration)){ // if it is rpc
-    //     callback(null, wire.toLocal[configuration]);
-    //     return;
-    // }
-    // callback(new Error(`Service ${configuration} not found`));
+    // else{
+    //     const rpc = global.toLocal[configuration];
+    //     if (rpc) {
+    //          callback(null, { call: rpc });
+    //      } else {
+    //          callback(new Error(`Service ${configuration} not found!`));
+    //       }
+    //   }
+     else if (wire.toLocal.hasOwnProperty(configuration)){ // if it is rpc
+        callback(null, wire.toLocal[configuration]);
+        return;
+    }
+    callback(new Error(`Service ${configuration} not found`));
 }
 
 /**
