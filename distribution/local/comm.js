@@ -15,13 +15,17 @@ const serialization = require("../util/serialization");
  * @param {Callback} [callback]
  * @return {void}
  */
+
 function send(message, remote, callback = () => {}) {
     const serializedMsg = serialization.serialize(message);
-
+    let path = `/local/${remote.service}/${remote.method}`;
+    if (remote.hasOwnProperty('gid')){ //if remote has gid entry
+        path = `/${remote.gid}/${remote.service}/${remote.method}`
+    }
     const options = {
         hostname: remote.node.ip,
         port: remote.node.port,
-        path: `/local/${remote.service}/${remote.method}`,
+        path: path,
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',

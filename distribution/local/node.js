@@ -18,13 +18,16 @@ const start = function(callback) {
       The url will have the form: http://node_ip:node_port/service/method
     */
       const words = req.url.split('/').filter(Boolean);
-      if (words.length < 3 || words[0] !== 'local') {
+      let service = words[1]; // service name
+      if (words.length < 3) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
           res.end(serialization.serialize({ error: 'Invalid URL format' }));
           return;
       }
+      if (words[0]!='local'){
+        service = {service:words[1],gid:words[0]};
+      }
       
-      const service = words[1]; // service name
       const method = words[2];  // method name
     /*
 

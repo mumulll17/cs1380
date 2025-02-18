@@ -1,7 +1,7 @@
 const id = require('../util/id');
-
 const status = {};
-
+status.spawn = require('@brown-ds/distribution/distribution/local/status').spawn; 
+status.stop = require('@brown-ds/distribution/distribution/local/status').stop; 
 global.moreStatus = {
   sid: id.getSID(global.nodeConfig),
   nid: id.getNID(global.nodeConfig),
@@ -43,10 +43,10 @@ status.get = function(configuration, callback) {
 };
 
 
-status.spawn = function(configuration, callback) {
-};
+// status.spawn = function(configuration, callback) {
+// };
 
-status.stop = function(callback) {
-};
+// status.stop = function(callback) {
+// };
 
 module.exports = status;
