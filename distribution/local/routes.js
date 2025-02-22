@@ -3,8 +3,8 @@ const status = require("./status");
 // const routes = require("./routes");
 const comm = require("./comm");
 const wire = require("../util/wire");
-const log = ('../util/log');
-const { config } = require("yargs");
+// const log = ('../util/log');
+// const { config } = require("yargs");
 const services = {
     status,
     comm,

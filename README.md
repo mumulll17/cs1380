@@ -134,3 +134,33 @@ They are in the entry called latency_comm_send and throughput_comm_send. Their u
 > How would you explain the implementation of `createRPC` to someone who has no background in computer science — i.e., with the minimum jargon possible?
 
 The createRPC is the code that takes a function in and gives you a function that allow somebody else from a remote computer to run your function on your computer. And it also allows you to send the result back to the other user.
+
+
+# M3: Node Groups & Gossip Protocols
+
+
+## Summary
+
+> Summarize your implementation, including key challenges you encountered. Remember to update the `report` section of the `package.json` file with the total number of hours it took you to complete each task of M3 (`hours`) and the lines of code per task.
+
+
+My implementation comprises `<10>` new software components, totaling `<400>` added lines of code over the previous implementation. Key challenges included `Local spawn and stop and all comm send. For comm send, the challenge is that I need to get the nodes and record all error and values, and it needs to be very detailed. For local spawn and stop, they are all related to other nodes, and it is hard to debug them. I tried to use log and help from TA to find out which part is wrong`.
+
+I have tried implementing the gossip send. I think I am on the right track, but I can't finish it.
+
+## Correctness & Performance Characterization
+
+> Describe how you characterized the correctness and performance of your implementation
+
+
+*Correctness* -- number of tests and time they take.
+I passed all required test. There are about 7 tests. They took me about 2 minutes to finish all of them.
+
+*Performance* -- spawn times (all students) and gossip (lab/ec-only).
+It took about three seconds to spawn five nodes, and they are tested in my student test for m3.
+
+## Key Feature
+
+> What is the point of having a gossip protocol? Why doesn't a node just send the message to _all_ other nodes in its group?
+
+It makes the scale smaller, so it can be more affordable. Similarly, it is more efficient
