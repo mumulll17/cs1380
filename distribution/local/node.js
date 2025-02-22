@@ -19,6 +19,7 @@ const start = function(callback) {
     */
       const words = req.url.split('/').filter(Boolean);
       let service = words[1]; // service name
+      // console.log('get in node.js');
       if (words.length < 3) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
           res.end(serialization.serialize({ error: 'Invalid URL format' }));
@@ -43,6 +44,7 @@ const start = function(callback) {
 
       Our nodes expect data in JSON format.
   */
+//  console.log('before body');   
     let body = '';
     req.on('data', (chunk) => {
       body += chunk;
@@ -52,7 +54,7 @@ const start = function(callback) {
       // console.log(deserialized);
       if (!(deserialized instanceof Array)){ //if it is not an array
         res.writeHead(400, { 'Content-Type': 'application/json' });
-        res.end(serialization.serialize(Error('Invalid Object')));
+        res.end(serialization.serialize({error:Error('Invalid Object'),value:null}));
       }
       /* Here, you can handle the service requests. */
 
@@ -60,14 +62,13 @@ const start = function(callback) {
       routes.get(serviceName, (e, service) => {
         if (e != null) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
-            return res.end(serialization.serialize(e)); // Ensure only one res.end() call
+            return res.end(serialization.serialize({error:e,value:null})); // Ensure only one res.end() call
         }
+        // console.log(service);
+        // console.log(method);
           const result = service[method](...deserialized,(e,v)=>{
-            if (e != null) {
-              res.writeHead(400, { 'Content-Type': 'application/json' });
-              return res.end(serialization.serialize(e)); // Ensure only one res.end() call
-            }
-            res.end(serialization.serialize(v));
+            log(v,'buginnode');
+            res.end(serialization.serialize({error:e,value:v}));
           });
     });
     
@@ -90,6 +91,7 @@ const start = function(callback) {
   server.listen(global.nodeConfig.port, global.nodeConfig.ip, () => {
     log(`Server running at http://${global.nodeConfig.ip}:${global.nodeConfig.port}/`);
     global.distribution.node.server = server;
+    // console.log(serialization.serialize(callback));
     callback(server);
   });
   server.on('error', (error) => {

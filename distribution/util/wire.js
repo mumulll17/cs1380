@@ -3,16 +3,22 @@ const crypto = require("crypto");
 const serialization = require('./serialization');
 // let createRPC = require('@brown-ds/distribution/distribution/util/wire').createRPC;
 // const distribution = require('../../config.js');
-const toLocal = {
-  rpc:{},
-}
+global.toLocal = {};
+// global.toLocal['rpc'] = {};
+// console.log(global.toLocal);
 function createRPC(func) {
+  if (!global.toLocal.hasOwnProperty('rpc')){
+    global.toLocal['rpc'] = {};
+  }
+  // console.log(global.toLocal);
   const config = global.nodeConfig;
   // const config2 = global.nodeConfig2;
   // first, want to put func to the toLocal table
   const randomInput = Math.random().toString();
   const hash = crypto.createHash("sha256").update(randomInput).digest("hex");
-  toLocal['rpc'][hash] = func;
+  // console.log(global.toLocal);
+  global.toLocal['rpc'][hash] = func;
+  // console.log(func.toString());
   let g = (...args)=>{
     const comm = global.distribution.local.comm;
     const cb = args.pop();
@@ -51,5 +57,5 @@ function toAsync(func) {
 module.exports = {
   createRPC: createRPC,
   toAsync: toAsync,
-  toLocal: toLocal,
+  // toLocal: toLocal,
 };

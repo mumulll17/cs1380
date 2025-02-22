@@ -3,6 +3,7 @@ const local = distribution.local;
 const comm = distribution.local.comm;
 
 test('(10 pts) local.status.spawn/stop using local.comm', (done) => {
+  // console.log(1);
   try {
     expect(local.status.spawn).toBeDefined();
     expect(local.status.stop).toBeDefined();
@@ -11,7 +12,7 @@ test('(10 pts) local.status.spawn/stop using local.comm', (done) => {
   } catch (error) {
     done(error);
   }
-
+  // console.log(2);
   const node = {
     ip: '127.0.0.1',
     port: 9090,
@@ -24,9 +25,11 @@ test('(10 pts) local.status.spawn/stop using local.comm', (done) => {
       console.log('Node is started!');
     },
   };
-
+  // console.log(3);
   const cleanup = (server, done) => {
     comm.send([], {service: 'status', method: 'stop', node: node}, (e, v) => {
+      console.log(e);
+      console.log(v);
       server.close();
       try {
         expect(e).toBeFalsy();
@@ -41,6 +44,8 @@ test('(10 pts) local.status.spawn/stop using local.comm', (done) => {
 
   const spawnNode = (server) => {
     local.status.spawn(config, (e, v) => {
+      // console.log("!!!");
+      // console.log(e);
       try {
         expect(e).toBeFalsy();
         expect(v).toBeDefined();
@@ -52,6 +57,9 @@ test('(10 pts) local.status.spawn/stop using local.comm', (done) => {
   };
 
   distribution.node.start((server) => {
+    // console.log(1111);
     spawnNode(server);
+    // console.log(2222);
+
   });
 });

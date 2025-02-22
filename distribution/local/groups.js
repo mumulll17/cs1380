@@ -1,10 +1,11 @@
-const { group } = require("yargs");
+const { group, string } = require("yargs");
 const id = require("../util/id");
 // const comm = require("@brown-ds/distribution/distribution/all/comm");
 const all = require("../all/all.js");
 const distribution = require('../../config.js');
 // const all = require("../all");
 const groups = {groups:{}};
+const log = require('../util/log');
 
 groups.get = function(name, callback) {
     if (name == 'all'){
@@ -20,8 +21,12 @@ groups.get = function(name, callback) {
 };
 
 groups.put = function(config, group, callback) {
-    groups.groups[config] = group;
-    global.distribution[config] = {  
+    if (typeof config == "string" ){
+        config = {gid:config};
+    }
+    // console.log(config);
+    groups.groups[config.gid] = group;
+    global.distribution[config.gid] = {  
         comm: all.comm(config),
         groups: all.groups(config),
         status: all.status(config),
@@ -31,6 +36,8 @@ groups.put = function(config, group, callback) {
         store: all.store(config),
         mr: all.mr(config),
     };
+    // console.log(group);
+    // console.log(global.distribution);
     callback(null,group);
     return;
 };
@@ -54,6 +61,7 @@ groups.add = function(name, node, callback) {
         }
         return;
     }
+    log(JSON.stringify(groups.groups),'bug');
     callback(Error(`No ${name} in these groups`));
     return;
 };

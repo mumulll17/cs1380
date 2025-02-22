@@ -62,6 +62,7 @@ test('(2 pts) all.routes.put(echo)', (done) => {
     const r3 = {node: n3, service: 'routes', method: 'get'};
 
     distribution.local.comm.send(['echo'], r1, (e, v) => {
+
       try {
         expect(e).toBeFalsy();
         expect(v.echo()).toBe('echo!');

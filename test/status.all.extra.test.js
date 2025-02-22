@@ -8,6 +8,8 @@ test('(10 pts) all.status.spawn/stop()', (done) => {
   // Spawn the node
   distribution.group4.status.spawn(nodeToSpawn, (e, v) => {
     try {
+      console.log(e)
+      console.log(v);
       expect(e).toBeFalsy();
       expect(v.ip).toEqual(nodeToSpawn.ip);
       expect(v.port).toEqual(nodeToSpawn.port);
@@ -27,6 +29,8 @@ test('(10 pts) all.status.spawn/stop()', (done) => {
 
       distribution.local.groups.get('group4', (e, v) => {
         try {
+          // console.log(v);
+          // console.log(id.getSID(nodeToSpawn));
           expect(e).toBeFalsy();
           expect(v[id.getSID(nodeToSpawn)]).toBeDefined();
         } catch (error) {
@@ -50,6 +54,7 @@ test('(10 pts) all.status.spawn/stop()', (done) => {
           distribution.local.comm.send(['nid'],
               remote, (e, v) => {
                 try {
+                  console.trace(e);
                   expect(e).toBeDefined();
                   expect(e).toBeInstanceOf(Error);
                   expect(v).toBeFalsy();

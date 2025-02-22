@@ -22,7 +22,7 @@ const n6 = {ip: '127.0.0.1', port: 9006};
 test('(2 pts) all.comm.send(status.get(nid))', (done) => {
   const nids = Object.values(mygroupGroup).map((node) => id.getNID(node));
   const remote = {service: 'status', method: 'get'};
-
+  global.distribution
   distribution.mygroup.comm.send(['nid'], remote, (e, v) => {
     expect(e).toEqual({});
     try {
@@ -45,6 +45,8 @@ test('(2 pts) local.comm.send(all.status.get(nid))', (done) => {
 
     // from local node, run mygroup.status.get() on n5 via send()
     distribution.local.comm.send(['nid'], remote, (e, v) => {
+      // console.trace(e);
+      // console.trace(v);
       expect(e).toEqual({});
 
       try {
@@ -80,9 +82,9 @@ beforeAll((done) => {
   const remote = {service: 'status', method: 'stop'};
 
   remote.node = n1;
-  console.log(1);
+  // console.log(1);
   distribution.local.comm.send([], remote, (e, v) => {
-    console.log(2);
+    // console.log(2);
     remote.node = n2;
     distribution.local.comm.send([], remote, (e, v) => {
       remote.node = n3;
@@ -117,20 +119,21 @@ beforeAll((done) => {
           });
     };
 
-    console.log(3);
+    // console.log(3);
     // Now, start the nodes listening node
     distribution.node.start((server) => {
       localServer = server;
-      console.log(4);
+      // console.log(4);
       // Start the nodes
       distribution.local.status.spawn(n1, (e, v) => {
-        console.log(5)
+        // console.log(5)
         distribution.local.status.spawn(n2, (e, v) => {
           distribution.local.status.spawn(n3, (e, v) => {
             distribution.local.status.spawn(n4, (e, v) => {
               distribution.local.status.spawn(n5, (e, v) => {
                 distribution.local.status.spawn(n6, (e, v) => {
                   groupInstantiation();
+                  // console.log(distribution.local.groups)
                 });
               });
             });

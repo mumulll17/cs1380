@@ -7,6 +7,7 @@ const gossip = function(config) {
 
   return {
     send: (payload, remote, callback) => {
+      
     },
 
     at: (period, func, callback) => {

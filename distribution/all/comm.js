@@ -1,5 +1,5 @@
 /** @typedef {import("../types").Callback} Callback */
-const distribution = require('../../config.js');
+// const distribution = require('../../config.js');
 /**
  * NOTE: This Target is slightly different from local.all.Target
  * @typdef {Object} Target
@@ -25,27 +25,32 @@ function comm(config) {
     const errors = {};
     const nodes = {};
     if (context.gid == 'all'){
-      for (let v of Object.values(distribution.local.groups.groups)){
+      // console.log(global.distribution.local);
+      for (let v of Object.values(global.distribution.local.groups.groups)){
         for (let k of Object.keys(v)){
           nodes[k] = v[k];
         }
       }
     } else {
-        for (let k of Object.keys(distribution.local.groups.groups[context.gid])){
-          nodes[k] = distribution.local.groups.groups[context.gid][k];
+        for (let k of Object.keys(global.distribution.local.groups.groups[context.gid])){
+          nodes[k] = global.distribution.local.groups.groups[context.gid][k];
         }
     }
+    console.log(context.gid);
+    console.log(nodes);
     let count = Object.keys(nodes).length;
     for (let key of Object.keys(nodes)){
       let remote = {node:nodes[key],service:configuration.service,method:configuration.method};
-      distribution.local.comm.send(message,remote,(e,v)=>{
+      global.distribution.local.comm.send(message,remote,(e,v)=>{
         count--;
         if (e!=null){
           errors[key] = e;
-        } else {
+        }
+        if (v!=null){
           values[key] = v;
         }
         if (count == 0){
+          // console.log(errors)
           callback(errors,values);
           return
         }

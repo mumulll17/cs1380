@@ -3,9 +3,10 @@ const id = distribution.util.id;
 
 test('(2 pts) all.status.get(nid)', (done) => {
   const nids = Object.values(mygroupGroup).map((node) => id.getNID(node));
-
+  // console.log(mygroupGroup);
   distribution.mygroup.status.get('nid', (e, v) => {
     try {
+      // console.log(v);
       expect(e).toEqual({});
       expect(Object.values(v).length).toBe(nids.length);
       expect(Object.values(v)).toEqual(expect.arrayContaining(nids));
@@ -94,8 +95,10 @@ beforeAll((done) => {
       // Create some groups
       distribution.local.groups
           .put(mygroupConfig, mygroupGroup, (e, v) => {
+            // console.trace(mygroupGroup);
             distribution.local.groups
                 .put(group4Config, group4Group, (e, v) => {
+                  // console.trace(group4Group);
                   done();
                 });
           });

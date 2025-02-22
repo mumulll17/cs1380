@@ -14,6 +14,7 @@
 */
 const builtinLibs = require('repl')._builtinLibs
 const avoidArr = ['crypto', 'punycode', 'sys', 'wasi']
+const log = require('../util/log.js');
 const builtInObjects = builtinLibs.reduce((acc, lib) => {
   if (!avoidArr.includes(lib)){
       const obj = require(lib);
@@ -107,7 +108,10 @@ function serialize(object) {
       uniqueId++;
       let serializedObject = {};
       for (const key in object) {
-        if (object.hasOwnProperty(key)) {
+        if (object == null || object == undefined) {
+          // log(JSON.stringify(object),'bug');
+        }
+        if (Object.hasOwn(object,key)) {
           // Serialize the value and make sure it's turned into a string
           serializedObject[key] = serialize(object[key]);
         }
@@ -205,6 +209,6 @@ function deserialize(string) {
 }
 }
 module.exports = {
-  serialize: require('@brown-ds/distribution/distribution/util/serialization').serialize,
-  deserialize: require('@brown-ds/distribution/distribution/util/serialization').deserialize,
+  serialize: serialize,
+  deserialize: deserialize,
 };
