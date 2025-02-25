@@ -36,8 +36,6 @@ function comm(config) {
           nodes[k] = global.distribution.local.groups.groups[context.gid][k];
         }
     }
-    console.log(context.gid);
-    console.log(nodes);
     let count = Object.keys(nodes).length;
     for (let key of Object.keys(nodes)){
       let remote = {node:nodes[key],service:configuration.service,method:configuration.method};

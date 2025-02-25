@@ -61,6 +61,7 @@ function send(message, remote, callback = () => {}) {
             //     return callback(new Error(`HTTP Error ${res.statusCode}: ${deserializedData}`));
             // }
             // console.log(deserializedData);
+            console.log(deserializedData);
             callback(deserializedData.error, deserializedData.value);
             return;
         });

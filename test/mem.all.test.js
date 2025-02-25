@@ -114,6 +114,8 @@ test('(1 pts) all.mem.put(no key)', (done) => {
   const user = {first: 'Josiah', last: 'Carberry'};
 
   distribution.mygroup.mem.put(user, null, (e, v) => {
+    console.log(e);
+    console.log(v);
     distribution.mygroup.mem.get(id.getID(user), (e, v) => {
       try {
         expect(e).toBeFalsy();
@@ -133,12 +135,14 @@ test(
       const key = 'gfringmpcs';
       const kid = id.getID(key);
       const nodes = Object.values(group1Group);
+      console.log(nodes);
       const nids = nodes.map((node) => id.getNID(node));
 
       distribution.group1.mem.put(user, key, (e, v) => {
         const nid = id.consistentHash(kid, nids);
         const pickedNode = nodes.filter((node) => id.getNID(node) === nid)[0];
         const remote = {node: pickedNode, service: 'mem', method: 'get'};
+        console.log(pickedNode);
         const message = [{gid: 'group1', key: key}];
 
         distribution.local.comm.send(message, remote, (e, v) => {
@@ -263,7 +267,7 @@ test('(1 pts) all.mem.put/del/get()', (done) => {
   });
 });
 
-test('(3 pts) all.mem.get(no key)', (done) => {
+test.only('(3 pts) all.mem.get(no key)', (done) => {
   const users = [
     {first: 'Saul', last: 'Goodman'},
     {first: 'Walter', last: 'White'},
@@ -295,7 +299,9 @@ test('(3 pts) all.mem.get(no key)', (done) => {
         }
         distribution.mygroup.mem.get(null, (e, v) => {
           try {
+            console.log(v);
             expect(e).toEqual({});
+            expect(["sgoodmanmgnk", "wwhitemgnk", "jpinkmanmgnk"]).toEqual(expect.arrayContaining(keys));
             expect(Object.values(v)).toEqual(expect.arrayContaining(keys));
             done();
           } catch (error) {

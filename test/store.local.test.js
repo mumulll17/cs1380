@@ -50,6 +50,8 @@ test('(1 pts) local.store.put/get(jcarb)', (done) => {
   const key = 'jcarbspg';
 
   distribution.local.store.put(user, key, (e, v) => {
+    console.log(e);
+    console.log(v);
     distribution.local.store.get(key, (e, v) => {
       try {
         expect(e).toBeFalsy();

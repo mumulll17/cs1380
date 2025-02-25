@@ -10,7 +10,9 @@ test('(5 pts) (scenario) use the local store', (done) => {
   const user = {first: 'Josiah', last: 'Carberry'};
   const key = 'jcarbspsg';
 
-
+  distribution.local.store.put(user, key, (e, v) => {
+    check()
+  });
   function check() {
     distribution.local.store.get(key, (e, v) => {
       try {
@@ -39,16 +41,13 @@ test('(5 pts) (scenario) hash functions return different nodes', () => {
     util.id.getNID({ip: '192.168.0.4', port: 8000}),
     util.id.getNID({ip: '192.168.0.5', port: 8000}),
   ];
-  let key1 = '?';
-  let key2 = '?';
-
-
+  let key1 = {ip: '192.168.0.1', port: 8000};
+  let key2 = {ip: '192.168.0.6', port: 8000};
   const kid1 = util.id.getID(key1);
   const kid2 = util.id.getID(key2);
 
   const key1Node = util.id.consistentHash(kid1, nodeIds);
   const key2Node = util.id.consistentHash(kid2, nodeIds);
-
   expect(key1Node).toBe(key2Node);
 });
 
@@ -98,14 +97,18 @@ test('(5 pts) (scenario) use mem.reconf', (done) => {
   const mygroupGroup = {};
   mygroupGroup[id.getSID(n1)] = n1;
   // Add more nodes to the group...
-
+  mygroupGroup[id.getSID(n2)] = n2;
+  mygroupGroup[id.getSID(n3)] = n3;
+  mygroupGroup[id.getSID(n4)] = n4;
+  mygroupGroup[id.getSID(n5)] = n5;
+  mygroupGroup[id.getSID(n6)] = n6;
   // Create a set of items and corresponding keys...
   const keysAndItems = [
     {key: 'a', item: {first: 'Josiah', last: 'Carberry'}},
   ];
 
   // Experiment with different hash functions...
-  const config = {gid: 'mygroup', hash: '?'};
+  const config = {gid: 'mygroup', hash: util.id.consistentHash};
 
   distribution.local.groups.put(config, mygroupGroup, (e, v) => {
     // Now, place each one of the items you made inside the group...
@@ -115,7 +118,7 @@ test('(5 pts) (scenario) use mem.reconf', (done) => {
         const groupCopy = {...mygroupGroup};
 
         // Remove a node from the group...
-        let toRemove = '?';
+        let toRemove = n1;
         distribution.mygroup.groups.rem(
             'mygroup',
             id.getSID(toRemove),
