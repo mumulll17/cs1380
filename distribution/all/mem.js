@@ -26,15 +26,15 @@ function mem(config) {
           always be a string */
   return {
     get: (configuration, callback) => {
-      if (configuration == null){
-        global.distribution[context.gid].comm.send([configuration],{service:"mem",method:"get"},(e,v)=>{
-          if (v!={}){
-            v = {value:Object.values(v).flat()};
-          }
-          callback(e,v);
-          return;
-        });
-      }
+      // if (configuration == null){
+      //   global.distribution[context.gid].comm.send([configuration],{service:"mem",method:"get"},(e,v)=>{
+      //     if (v!={}){
+      //       v = {value:Object.values(v).flat()};
+      //     }
+      //     callback(e,v);
+      //     return;
+      //   });
+      // }
       const n = parseInt(configuration, 16);
       let hashedConfig = configuration;
       if (isNaN(n)){ //if it is not a kid
