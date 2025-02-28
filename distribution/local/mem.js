@@ -3,9 +3,9 @@ global.memMap = {all:{}};
 // const serialization = require("../util/serialization");
 const id = require("../util/id");
 const { globalAgent } = require("http");
+const log = require("../util/log");
 const { glob, openAsBlob } = require("fs");
 function put(state, configuration, callback) {
-    console.log(configuration)
     if (typeof configuration === "string" || configuration == null){
         configuration = {key:configuration};
     }
@@ -21,8 +21,12 @@ function put(state, configuration, callback) {
                     global.memMap[gid] = {};
                 }
                 global.memMap[gid][key] = state;
+                log(gid,"bug");
+            }else{
+                global.memMap['all'][key] = state;
             }
-            global.memMap['all'][key] = state;
+            console.log()
+            log(JSON.stringify(global.memMap));
             callback(null,state);
             return
         }
@@ -31,26 +35,13 @@ function put(state, configuration, callback) {
     }
     callback(new Error("Input configuration is wrong (not a string, not a null, not an object)"));
     return;
-    // // if it is a string
-    // if (typeof configuration === "string"){
-    //     global.memMap[configuration] = state;
-    //     callback(null,state);
-    //     return;
-    // }
-    // else if (configuration == null){
-    //     global.memMap[id.getID(state)] = state;
-    //     callback(null,state);
-    //     return;
-    // }
-    // }
-    // callback(new Error("Configuration name is not a string or null"));
-    // return;
 };
 
 function get(configuration, callback) {
     if (typeof configuration === "string" || configuration == null){
         configuration = {key:configuration};
     }
+    log(JSON.stringify(configuration),"buginget");
     if (configuration instanceof Object){
         if (configuration.hasOwnProperty("key")){
             let key = configuration.key;
@@ -58,7 +49,8 @@ function get(configuration, callback) {
             if (configuration.hasOwnProperty("gid")){ //get the gid if it has one
                 gid = configuration.gid;
                 if (!global.memMap.hasOwnProperty(gid)){
-                    callback(new Error(`No such gid ${gid} in the map`));
+                    // callback(new Error(`No such gid ${gid} in the map`));
+                    callback(null,{})//instead return an error, want to return an empty list
                     return
                 }
             }
@@ -78,21 +70,6 @@ function get(configuration, callback) {
     }
     callback(new Error("Input configuration is wrong (not a string, not a null, not an object)"));
     return;
-    // if (typeof configuration === "string"){
-    //     if (global.memMap.hasOwnProperty(configuration)){
-    //         callback(null,global.memMap[configuration]);
-    //         return;
-    //     }
-    //     callback(new Error(`No such key ${configuration} in the map`));
-    //     return;
-    // }
-    // else if (configuration == null){ //if it is null, return all the keys
-    //     callback(null,Object.keys(global.memMap));
-    //     return;
-    // }
-    // callback(new Error("configuration is not a string or null"));
-    // return;
-
 }
 
 function del(configuration, callback) {
@@ -124,18 +101,6 @@ function del(configuration, callback) {
     }
     callback(new Error("Input configuration is wrong (not a string, not a null, not an object)"));
     return;
-    // if (typeof configuration === "string"){
-    //     if (global.memMap.hasOwnProperty(configuration)){
-    //         let obj = global.memMap[configuration];
-    //         delete global.memMap[configuration];
-    //         callback(null,obj);
-    //         return;
-    //     }
-    //     callback(new Error(`No such key ${configuration} in the map`));
-    //     return;
-    // }
-    // callback(new Error("configuration is not a string or null"));
-    // return;
 };
 
 module.exports = {put, get, del};

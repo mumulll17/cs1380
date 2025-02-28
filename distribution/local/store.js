@@ -8,113 +8,257 @@ const id = require("../util/id");
 const fs = require('fs');
 const serialization = require("../util/serialization");
 // create the folder at the root folder
-const dirPath = path.join(__dirname, '/store');
-const SecondaryDirPath = path.join(__dirname, `/store/${global.moreStatus['nid']}`);
-if (!fs.existsSync(dirPath)) {
+const dirPath = path.resolve(process.cwd(), 'store');
+const SecondaryDirPath = path.resolve(process.cwd(), `store/${global.moreStatus['nid']}`);
+const AllPath = path.resolve(process.cwd(), `${SecondaryDirPath}/all`);
+console.log(SecondaryDirPath);
+console.log(AllPath);
+function init(callback){
   fs.mkdir(dirPath, (err) => {
     if (err) {
-      console.error(err);
-      return;
-    }
-    console.log('Directory created successfully!');
-    fs.mkdir(SecondaryDirPath,(err)=>{
-      if (err) {
+      if (err.code != 'EEXIST') {
         console.error(err);
         return;
       }
-      console.log('Secondary Directory created successfully!');
-    });
-  });
-} else {
-  console.log('Directory already exists!');
-  if (!fs.existsSync(SecondaryDirPath)){
+    }
+    console.log('Directory created successfully!');
     fs.mkdir(SecondaryDirPath,(err)=>{
+      console.log(111);
       if (err) {
-        console.log(err);
-        return;
+        if (err.code != 'EEXIST') {
+          console.error(err);
+          return;
+        }
       }
       console.log('Secondary Directory created successfully!');
+      fs.mkdir(AllPath,(err)=>{
+        if (err) {
+          if (err.code != 'EEXIST') {
+            console.error(err);
+            return;
+          }
+        }
+        console.log('All directory created successfully!');
+        callback(null);
+      });
     });
-  }
+  });
 }
 
 function put(state, configuration, callback) {
-  if (typeof configuration === "string"){
-    let pathName = configuration.replace(/[^a-zA-Z0-9]/g, ''); //make it alpha-numeric only
-    fs.writeFile(`${SecondaryDirPath}/${pathName}`,serialization.serialize(state),(e)=>{
-      if (e){
-        callback(new Error('error is',{source:e}));
-        return;
-      }
-      callback(null,state);
-      return;
-    })
-  }else if(configuration == null){
-    const pathName = id.getID(state);
-    fs.writeFile(`${SecondaryDirPath}/${pathName}`,serialization.serialize(state),(e)=>{
-      if (e){
-        callback(new Error('error is',{source:e}));
-        return;
-      }
-      callback(null,state);
-      return;
-    })
-  }else{
-    callback(new Error("Configuration name is not a string or null"));
-    return;
+  init((err)=>{
+    if (typeof configuration === "string" || configuration == null){
+      configuration = {key:configuration};
   }
+  if (configuration instanceof Object){
+      if (configuration.hasOwnProperty("key")){
+          let key = configuration.key;
+          if (key == null){ //if key is null
+              key = id.getID(state);
+          }
+          let pathName = key.replace(/[^a-zA-Z0-9]/g, ''); //make it alpha-numeric only
+          if (configuration.hasOwnProperty("gid") && configuration.gid!='all'){ //get the gid if it has one
+            let gidPath = configuration.gid;
+            let thirdDirPath = `${SecondaryDirPath}/${gidPath}`
+            // the huge callback that add the file to the directory of the group and all
+            fs.mkdir(thirdDirPath, (err) => {
+              if (err) {
+                if (err.code != 'EEXIST') {
+                  console.error(err);
+                  return;
+                }
+              }
+              fs.writeFile(`${thirdDirPath}/${pathName}`,serialization.serialize(state),(e)=>{
+                if (e){
+                  callback(new Error(`error is ${e}`));
+                  return;
+                }
+                callback(null,state);
+              })
+            }); 
+          }else{
+            // if the gid is all or it is not provided, just write to the "all" directory
+            fs.writeFile(`${AllPath}/${pathName}`,serialization.serialize(state),(e)=>{
+              if (e){
+                console.log(AllPath);
+                console.log(pathName)
+                const err = new Error(`error is ${e}`);
+                callback(err);
+                return;
+              }
+              callback(null,state);
+              return;
+            });
+          };
+          return;
+      }
+      callback(new Error("Wrong object in local mem put"));
+      return;
+  }
+  callback(new Error("Input configuration is wrong (not a string, not a null, not an object)"));
+  return;
+  })
+  // if (typeof configuration === "string"){
+  //   let pathName = configuration.replace(/[^a-zA-Z0-9]/g, ''); //make it alpha-numeric only
+  //   fs.writeFile(`${SecondaryDirPath}/${pathName}`,serialization.serialize(state),(e)=>{
+  //     if (e){
+  //       callback(new Error('error is',{source:e}));
+  //       return;
+  //     }
+  //     callback(null,state);
+  //     return;
+  //   })
+  // }else if(configuration == null){
+  //   const pathName = id.getID(state);
+  //   fs.writeFile(`${SecondaryDirPath}/${pathName}`,serialization.serialize(state),(e)=>{
+  //     if (e){
+  //       callback(new Error('error is',{source:e}));
+  //       return;
+  //     }
+  //     callback(null,state);
+  //     return;
+  //   })
+  // }else{
+  //   callback(new Error("Configuration name is not a string or null"));
+  //   return;
+  // }
 
 }
 
-function get(configuration, callback) {
-  if (typeof configuration === "string"){
-    let pathName = configuration.replace(/[^a-zA-Z0-9]/g, ''); //make it alpha-numeric only
-    fs.readFile(`${SecondaryDirPath}/${pathName}`,'utf8',(e,v)=>{
-      if (e){
-        callback(new Error('error is',{source:e}));
-        return;
-      }
-      const state = serialization.deserialize(v)
-      callback(null,state);
-      return;
-    })
-  }else if (configuration == null){
-    fs.readdir(SecondaryDirPath,(e,v)=>{
-      if (e){
-        callback(new Error('error is',{source:e}));
-        return;
-      }
-      callback(null,v);
-      return;
-    })
-  }else{
-    callback(new Error("Configuration name is not a string or null"));
-    return;
+function get(configuration, callback) {    
+  if (typeof configuration === "string" || configuration == null){
+    configuration = {key:configuration};
   }
+  if (configuration instanceof Object){
+    if (configuration.hasOwnProperty("key")){
+      let key = configuration.key;
+      let gid = 'all';
+      if (configuration.hasOwnProperty("gid")){ //get the gid if it has one
+          gid = configuration.gid;
+      }
+      if (key == null){ //if key is null
+        fs.readdir(`${SecondaryDirPath}/${gid}`,(e,v)=>{
+          if (e){
+            callback(new Error(`error is ${e}`));
+            return;
+          }
+          callback(null,v);
+          return;
+        })
+      }else if (typeof key === "string"){
+        //get the specified file;
+        let pathName = key.replace(/[^a-zA-Z0-9]/g, ''); //make it alpha-numeric only
+        fs.readFile(`${SecondaryDirPath}/${gid}/${pathName}`,'utf8',(e,v)=>{
+          if (e){
+            callback(new Error(`error is ${e}`));
+            return;
+          }
+          const state = serialization.deserialize(v)
+          callback(null,state);
+          return;
+        })
+      } else {
+        callback(new Error("Configuration name is not a string or null"));
+        return;
+      }
+    }else{
+      callback(new Error("Wrong object in local store get"));
+      return;
+    }
+  }else{
+    callback(new Error("Input configuration is wrong (not a string, not a null, not an object)"));
+    return;
+}
+
+  // if (typeof configuration === "string"){
+  //   let pathName = configuration.replace(/[^a-zA-Z0-9]/g, ''); //make it alpha-numeric only
+  //   fs.readFile(`${SecondaryDirPath}/${pathName}`,'utf8',(e,v)=>{
+  //     if (e){
+  //       callback(new Error('error is',{source:e}));
+  //       return;
+  //     }
+  //     const state = serialization.deserialize(v)
+  //     callback(null,state);
+  //     return;
+  //   })
+  // }else if (configuration == null){
+  //   fs.readdir(SecondaryDirPath,(e,v)=>{
+  //     if (e){
+  //       callback(new Error('error is',{source:e}));
+  //       return;
+  //     }
+  //     callback(null,v);
+  //     return;
+  //   })
+  // }else{
+  //   callback(new Error("Configuration name is not a string or null"));
+  //   return;
+  // }
 }
 
 function del(configuration, callback) {
-  let pathName = configuration.replace(/[^a-zA-Z0-9]/g, ''); //make it alpha-numeric only
   if (typeof configuration === "string"){
-    fs.readFile(`${SecondaryDirPath}/${pathName}`,'utf8',(e,v)=>{
-      if (e){
-        callback(new Error('error is',{source:e}));
+    configuration = {key:configuration};
+  }
+  if (configuration instanceof Object){
+    if (configuration.hasOwnProperty("key")){
+      let key = configuration.key;
+      let gid = 'all';
+      if (configuration.hasOwnProperty("gid")){ //get the gid if it has one
+          gid = configuration.gid;
+      }
+      if (typeof key === "string"){
+        //get the specified file
+        let pathName = key.replace(/[^a-zA-Z0-9]/g, ''); //make it alpha-numeric only
+        fs.readFile(`${SecondaryDirPath}/${gid}/${pathName}`,'utf8',(e,v)=>{
+          if (e){
+            callback(new Error(`error is ${e}`));
+            return;
+          }
+          const state = serialization.deserialize(v)
+          fs.unlink(`${SecondaryDirPath}/${gid}/${pathName}`,(e)=>{
+            if (e){
+              callback(new Error(`error is ${e}`));
+              return;
+            }
+            callback(null,state)
+            return;
+          })
+        })
+      } else {
+        callback(new Error("Configuration name is not a string"));
         return;
       }
-      const state = serialization.deserialize(v)
-      fs.unlink(`${SecondaryDirPath}/${pathName}`,(e)=>{
-        if (e){
-          callback(new Error('error is',{source:e}));
-          return;
-        }
-        callback(null,state)
-        return;
-      })
-    })
+    }else{
+      callback(new Error("Wrong object in local store del"));
+      return;
+    }
   }else{
-    callback(new Error("Configuration name is not a string or null"));
+    callback(new Error("Input configuration is wrong (not a string, not a null, not an object)"));
     return;
-  }
+}
+
+  // let pathName = configuration.replace(/[^a-zA-Z0-9]/g, ''); //make it alpha-numeric only
+  // if (typeof configuration === "string"){
+  //   fs.readFile(`${SecondaryDirPath}/${pathName}`,'utf8',(e,v)=>{
+  //     if (e){
+  //       callback(new Error('error is',{source:e}));
+  //       return;
+  //     }
+  //     const state = serialization.deserialize(v)
+  //     fs.unlink(`${SecondaryDirPath}/${pathName}`,(e)=>{
+  //       if (e){
+  //         callback(new Error('error is',{source:e}));
+  //         return;
+  //       }
+  //       callback(null,state)
+  //       return;
+  //     })
+  //   })
+  // }else{
+  //   callback(new Error("Configuration name is not a string or null"));
+  //   return;
+  // }
 }
 
 module.exports = {put, get, del};

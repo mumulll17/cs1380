@@ -1,3 +1,3 @@
-const id = require("../util/id");
-let a = "tommu";
-console.log(id.getID(a));
+const distribution = require("@brown-ds/distribution");
+
+console.log(distribution.local.comm.send)

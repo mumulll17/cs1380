@@ -30,6 +30,7 @@ test('(3 pts) all.mem.get(no key)', (done) => {
       }
       distribution.mygroup.mem.put(users[2], keys[2], (e, v) => {
         try {
+          console.log()
           expect(e).toBeFalsy();
         } catch (error) {
           done(error);
@@ -37,6 +38,8 @@ test('(3 pts) all.mem.get(no key)', (done) => {
         }
         distribution.mygroup.mem.get(null, (e, v) => {
           try {
+            expect(["ewatson", "jkrasinski", "jbowen"]).toEqual(expect.arrayContaining(keys));
+            expect(Object.values(v)).toEqual(expect.arrayContaining(keys));
             expect(e).toEqual({});
             expect(Object.values(v)).toEqual(expect.arrayContaining(keys));
             done();
@@ -50,7 +53,7 @@ test('(3 pts) all.mem.get(no key)', (done) => {
   });
 });
 
-test('(10 pts) all.mem.reconf', (done) => {
+test.only('(10 pts) all.mem.reconf', (done) => {
   // First, we check where the keys should be placed
   // before we change the group's nodes.
   // mygroup uses the specified hash function for item placement,
@@ -152,7 +155,7 @@ test('(10 pts) all.mem.reconf', (done) => {
             // We need to pass a copy of the group's
             // nodes before we call reconf()
             const groupCopy = {...mygroupGroup};
-
+            console.log(groupCopy);
             // Then, we remove n3 from the list of nodes,
             // and run reconf() with the new list of nodes
             // Note: In this scenario, we are removing a node that has no items in it.
@@ -161,6 +164,9 @@ test('(10 pts) all.mem.reconf', (done) => {
                   'mygroup',
                   id.getSID(n3),
                   (e, v) => {
+                    global.distribution.local.groups.get('mygroup',(e,v)=>{
+                      console.log(v);
+                    });
                     distribution.mygroup.mem.reconf(groupCopy, (e, v) => {
                       checkPlacement();
                     });

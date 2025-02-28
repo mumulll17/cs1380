@@ -67,7 +67,7 @@ const start = function(callback) {
         // console.log(service);
         // console.log(method);
           const result = service[method](...deserialized,(e,v)=>{
-            log(v,'buginnode');
+            // log(v,'buginnode');
             res.end(serialization.serialize({error:e,value:v}));
           });
     });

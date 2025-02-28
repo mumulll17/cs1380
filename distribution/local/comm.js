@@ -1,6 +1,6 @@
 /** @typedef {import("../types").Callback} Callback */
 /** @typedef {import("../types").Node} Node */
-// const distribution = require("@brown-ds/distribution");
+const distribution = require("@brown-ds/distribution");
 const http = require('node:http');
 const serialization = require('../util/serialization');
 const log = require('../util/log.js');
@@ -61,17 +61,18 @@ function send(message, remote, callback = () => {}) {
             //     return callback(new Error(`HTTP Error ${res.statusCode}: ${deserializedData}`));
             // }
             // console.log(deserializedData);
-            console.log(deserializedData);
+            // console.log(deserializedData);
             callback(deserializedData.error, deserializedData.value);
             return;
         });
     });
 
     req.on('error', (err) => {
-        callback(new Error(`send fail`,{source:err}));
+        callback(new Error(`send fail${err}`));
     });
     req.write(serializedMsg);
     req.end();
 }
 
 module.exports = { send};
+// module.exports = {send:distribution.local.comm.send}
