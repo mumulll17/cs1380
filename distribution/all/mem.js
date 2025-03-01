@@ -37,14 +37,14 @@ function mem(config) {
             res[count] = val;
             count+=1
           }
-          console.log(res);
+          // console.log(res);
           callback(e,res);
         })
         return;
       }
       const n = parseInt(configuration, 16);
       let hashedConfig = configuration;
-      if (isNaN(n)){ //if it is not a kid
+      if (hashedConfig.length!=64 || isNaN(n)){ //if it is not a kid
         hashedConfig = id.getID(configuration)
       }
       const nodes = getNodes(context);
@@ -59,8 +59,8 @@ function mem(config) {
     },
 
     put: (state, configuration, callback) => {
-      console.log("in put");
-      // console.log(context.gid);
+      // console.log("in put");
+      // console.log(configuration);
       let hashedConfig = id.getID(configuration);
       if (configuration == null){
         configuration = id.getID(state);
@@ -73,10 +73,10 @@ function mem(config) {
       }
       let nid = context.hash(hashedConfig,Object.keys(nids));
       let node = nids[nid];
-      console.log(nids)
-      console.log(nid);
-      console.log(configuration);
-      console.log(hashedConfig);
+      // console.log(nids)
+      // console.log(nid);
+      // console.log(configuration);
+      // console.log(hashedConfig);
       const remote = {node: node, service: 'mem', method: 'put'};
       // console.log(JSON.stringify(node));
       // console.log(configuration);
@@ -87,13 +87,12 @@ function mem(config) {
     del: (configuration, callback) => {
       const n = parseInt(configuration, 16);
       let hashedConfig = configuration;
-      
-      if (hashedConfig.length!=64){ //if it is not a kid
+      if (hashedConfig.length!=64 || isNaN(n)){ //if it is not a kid
         hashedConfig = id.getID(configuration)
       }
-      console.log("in delete")
+      // console.log("in delete")
       const nodes = getNodes(context);
-      console.log(nodes);
+      // console.log(nodes);
       let nids = {}; //map match nid to node
       for (let node of Object.values(nodes)){
         nids[id.getNID(node)] = node;
@@ -101,10 +100,10 @@ function mem(config) {
       let nid = context.hash(hashedConfig,Object.keys(nids));
       let node = nids[nid];
       const remote = {node: node, service: 'mem', method: 'del'};
-      console.log(nids)
-      console.log(nid);
-      console.log(configuration);
-      console.log(hashedConfig);
+      // console.log(nids)
+      // console.log(nid);
+      // console.log(configuration);
+      // console.log(hashedConfig);
       comm.send([{key:configuration,gid:context.gid}],remote,callback);
     },
 
@@ -112,15 +111,15 @@ function mem(config) {
       // first remove the new group
       global.distribution.local.groups.del(context.gid,(e,v)=>{
         const newGroup = v;
-        console.log(newGroup);
+        // console.log(newGroup);
         // then add the old group back
         global.distribution.local.groups.put(context.gid,configuration,(e,v)=>{
           const oldGroup = v;
-          console.log(oldGroup);
+          // console.log(oldGroup);
           // get all keys
           global.distribution[context.gid].mem.get(null,(e,v)=>{
-            console.log(e);
-            console.log(v);
+            // console.log(e);
+            // console.log(v);
             const keys = [];
             for (let val of Object.values(v)){
               if (typeof val=="string"){
@@ -129,12 +128,14 @@ function mem(config) {
             }
             // delete all of them
             let deleteCount = 0;
-            const vals = []
+            const vals = {}
             for (let key of keys){
               global.distribution[context.gid].mem.del(key,(e,v)=>{
-                console.log(key)
-                console.log(v);
-                vals.push(v)
+                // console.log("inreconf")
+                // console.log(key)
+                // console.log(v);
+                vals[key] = v;
+                // console.log(vals)
                 deleteCount++
                 if (deleteCount == keys.length){
                   // delete the old group
@@ -143,10 +144,10 @@ function mem(config) {
                     global.distribution.local.groups.put(context.gid,newGroup,(e,v)=>{
                       let putCount = 0;
                       for (let key of keys){
-                        global.distribution[context.gid].mem.put(key,(e,v)=>{
+                        global.distribution[context.gid].mem.put(vals[key],key,(e,v)=>{
                           putCount++;
                           if (putCount == keys.length){
-                            console.log(global.memMap);
+                            // console.log(global.memMap);
                             callback(e,v);
                           }
                         })

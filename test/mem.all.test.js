@@ -10,6 +10,7 @@ test('(1 pts) all.mem.put(jcarb)/mygroup.mem.get(jcarb)', (done) => {
   distribution.all.mem.put(user, key, (e, v) => {
     distribution.mygroup.mem.get(key, (e, v) => {
       try {
+        console.log(e);
         expect(e).toBeInstanceOf(Error);
         expect(v).toBeFalsy();
         done();

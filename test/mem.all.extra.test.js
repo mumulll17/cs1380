@@ -53,7 +53,7 @@ test('(3 pts) all.mem.get(no key)', (done) => {
   });
 });
 
-test.only('(10 pts) all.mem.reconf', (done) => {
+test('(10 pts) all.mem.reconf', (done) => {
   // First, we check where the keys should be placed
   // before we change the group's nodes.
   // mygroup uses the specified hash function for item placement,
@@ -88,8 +88,6 @@ test.only('(10 pts) all.mem.reconf', (done) => {
         [{key: keys[3], gid: 'mygroup'}],
         [{key: keys[4], gid: 'mygroup'}],
       ];
-      done();
-      return;
       distribution.local.comm.send(messages[0], remote, (e, v) => {
         try {
           expect(e).toBeFalsy();

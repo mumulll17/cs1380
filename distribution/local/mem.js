@@ -25,7 +25,7 @@ function put(state, configuration, callback) {
             }else{
                 global.memMap['all'][key] = state;
             }
-            console.log()
+            // console.log()
             log(JSON.stringify(global.memMap));
             callback(null,state);
             return
@@ -50,8 +50,7 @@ function get(configuration, callback) {
                 gid = configuration.gid;
                 if (!global.memMap.hasOwnProperty(gid)){
                     // callback(new Error(`No such gid ${gid} in the map`));
-                    callback(null,{})//instead return an error, want to return an empty list
-                    return
+                    global.memMap[gid] = {}
                 }
             }
             if (key == null){ //if key is null
