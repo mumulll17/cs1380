@@ -75,6 +75,10 @@ const start = function(callback) {
 
     })
     }
+    else {
+      res.writeHead(405, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Method Not Allowed' }));
+    }
 
 
   });
@@ -89,6 +93,7 @@ const start = function(callback) {
     remotely through the service interface.
   */
   server.listen(global.nodeConfig.port, global.nodeConfig.ip, () => {
+    console.log(11111);
     log(`Server running at http://${global.nodeConfig.ip}:${global.nodeConfig.port}/`);
     global.distribution.node.server = server;
     // console.log(serialization.serialize(callback));
