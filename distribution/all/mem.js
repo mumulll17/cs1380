@@ -59,6 +59,7 @@ function mem(config) {
     },
 
     put: (state, configuration, callback) => {
+      console.log("in put");
       // console.log(context.gid);
       let hashedConfig = id.getID(configuration);
       if (configuration == null){
@@ -72,17 +73,27 @@ function mem(config) {
       }
       let nid = context.hash(hashedConfig,Object.keys(nids));
       let node = nids[nid];
+      console.log(nids)
+      console.log(nid);
+      console.log(configuration);
+      console.log(hashedConfig);
       const remote = {node: node, service: 'mem', method: 'put'};
+      // console.log(JSON.stringify(node));
+      // console.log(configuration);
+
       comm.send([state,{key:configuration,gid:context.gid}],remote,callback);
     },
 
     del: (configuration, callback) => {
       const n = parseInt(configuration, 16);
       let hashedConfig = configuration;
-      if (isNaN(n)){ //if it is not a kid
+      
+      if (hashedConfig.length!=64){ //if it is not a kid
         hashedConfig = id.getID(configuration)
       }
+      console.log("in delete")
       const nodes = getNodes(context);
+      console.log(nodes);
       let nids = {}; //map match nid to node
       for (let node of Object.values(nodes)){
         nids[id.getNID(node)] = node;
@@ -90,81 +101,139 @@ function mem(config) {
       let nid = context.hash(hashedConfig,Object.keys(nids));
       let node = nids[nid];
       const remote = {node: node, service: 'mem', method: 'del'};
+      console.log(nids)
+      console.log(nid);
+      console.log(configuration);
+      console.log(hashedConfig);
       comm.send([{key:configuration,gid:context.gid}],remote,callback);
     },
 
     reconf: (configuration, callback) => {
-      global.distribution[context.gid].comm.send([{key:null,gid:context.gid}],{service:'mem',method:'get'},(e,v)=>{
-        const res = {};
-        const vals = Object.values(v).flat();
-        let count = 0;
-        for (let val of vals){
-          if (typeof val=="string"){
-            console.log(val)
-            res[count] = val;
-            count+=1
-          }
-        }
-        if (e!={}){
-          callback(e,res);
-        }
-        console.log(res);
-        //get the new group
-        global.distribution.local.groups.get(context.gid,(e,newGroup)=>{
-          if (e!=null){
-            callback(e);
-          }
-          const oldGroup = configuration;
-          const oldNids = Object.values(oldGroup).map((node)=>id.getNID(node));
-          console.log(oldNids);
-          const newNids = Object.values(newGroup).map((node)=>id.getNID(node));
-          console.log(newNids);
-          const kids = Object.values(res).map((key)=>id.getID(key));
-          console.log(kids);
-          const diffGroup = []
-          let ind = 0;
-          for (let kid of kids){
-            let oldNid = context.hash(kid,oldNids);
-            let newNid = context.hash(kid,newNids);
-            // console.log(oldNid);
-            // console.log(newNid);
-            if (oldNid!=newNid){
-              diffGroup.push([oldNid,newNid,Object.values(res)[ind]]);
-            }
-            ind++;
-          }
-          console.log(diffGroup);
-          let count = diffGroup.length;
-          for (let nodes of diffGroup){
-            let oldNode = oldGroup[nodes[0].substring(0, 5)];
-            let newNode = newGroup[nodes[1].substring(0, 5)];
-            // console.log(nodes[2]);
-            global.distribution.local.comm.send([{key:nodes[2],gid:context.gid}],{node: oldNode, service: 'mem', method: 'get'},(e,v)=>{
-              if (e){
-                console.log(e);
-                return;
+      // first remove the new group
+      global.distribution.local.groups.del(context.gid,(e,v)=>{
+        const newGroup = v;
+        console.log(newGroup);
+        // then add the old group back
+        global.distribution.local.groups.put(context.gid,configuration,(e,v)=>{
+          const oldGroup = v;
+          console.log(oldGroup);
+          // get all keys
+          global.distribution[context.gid].mem.get(null,(e,v)=>{
+            console.log(e);
+            console.log(v);
+            const keys = [];
+            for (let val of Object.values(v)){
+              if (typeof val=="string"){
+                keys.push(val);
               }
-              global.distribution.local.comm.send([{key:nodes[2],gid:context.gid}],{node: oldNode, service: 'mem', method: 'del'},(e,v)=>{
-                if (e){
-                  console.log(e);
-                  return;
-                }
+            }
+            // delete all of them
+            let deleteCount = 0;
+            const vals = []
+            for (let key of keys){
+              global.distribution[context.gid].mem.del(key,(e,v)=>{
+                console.log(key)
                 console.log(v);
-                console.log(newNode);
-                global.distribution.local.comm.send([v,{key:nodes[2],gid:context.gid}],{node: newNode, service: 'mem', method: 'put'},(e,v)=>{
-                  count--;
-                  console.log(nodes[2]);
-                  console.log(context.gid);
-                  console.log(e);
-                  if (count == 0){
-                    callback(null,diffGroup);
-                  }
-                });
-              });
-            })
-          }
+                vals.push(v)
+                deleteCount++
+                if (deleteCount == keys.length){
+                  // delete the old group
+                  global.distribution.local.groups.del(context.gid,(e,v)=>{
+                    // add the new group
+                    global.distribution.local.groups.put(context.gid,newGroup,(e,v)=>{
+                      let putCount = 0;
+                      for (let key of keys){
+                        global.distribution[context.gid].mem.put(key,(e,v)=>{
+                          putCount++;
+                          if (putCount == keys.length){
+                            console.log(global.memMap);
+                            callback(e,v);
+                          }
+                        })
+                      }
+                    });
+                  });
+                }
+              })
+            }
+          })
         })
       })
+
+
+
+      // global.distribution[context.gid].comm.send([{key:null,gid:context.gid}],{service:'mem',method:'get'},(e,v)=>{
+      //   const res = {};
+      //   const vals = Object.values(v).flat();
+      //   let count = 0;
+      //   for (let val of vals){
+      //     if (typeof val=="string"){
+      //       console.log(val)
+      //       res[count] = val;
+      //       count+=1
+      //     }
+      //   }
+      //   if (e!={}){
+      //     callback(e,res);
+      //   }
+      //   console.log(res);
+      //   //get the new group
+      //   global.distribution.local.groups.get(context.gid,(e,newGroup)=>{
+      //     if (e!=null){
+      //       callback(e);
+      //     }
+      //     const oldGroup = configuration;
+      //     const oldNids = Object.values(oldGroup).map((node)=>id.getNID(node));
+      //     console.log(oldNids);
+      //     const newNids = Object.values(newGroup).map((node)=>id.getNID(node));
+      //     console.log(newNids);
+      //     const kids = Object.values(res).map((key)=>id.getID(key));
+      //     console.log(kids);
+      //     const diffGroup = []
+      //     let ind = 0;
+      //     for (let kid of kids){
+      //       let oldNid = context.hash(kid,oldNids);
+      //       let newNid = context.hash(kid,newNids);
+      //       // console.log(oldNid);
+      //       // console.log(newNid);
+      //       // if (oldNid!=newNid){
+      //         diffGroup.push([oldNid,newNid,Object.values(res)[ind]]);
+      //       // }
+      //       ind++;
+      //     }
+      //     console.log(diffGroup);
+      //     let count = diffGroup.length;
+      //     for (let nodes of diffGroup){
+      //       let oldNode = oldGroup[nodes[0].substring(0, 5)];
+      //       let newNode = newGroup[nodes[1].substring(0, 5)];
+      //       // console.log(nodes[2]);
+      //       global.distribution.local.comm.send([{key:nodes[2],gid:context.gid}],{node: oldNode, service: 'mem', method: 'get'},(e,v)=>{
+      //         if (e){
+      //           console.log(e);
+      //           return;
+      //         }
+      //         global.distribution.local.comm.send([{key:nodes[2],gid:context.gid}],{node: oldNode, service: 'mem', method: 'del'},(e,v)=>{
+      //           if (e){
+      //             console.log(e);
+      //             return;
+      //           }
+      //           console.log(v);
+      //           console.log(newNode);
+      //           global.distribution[context.gid].comm.send([v,{key:nodes[2],gid:context.gid}],{node: newNode, service: 'mem', method: 'put'},(e,v)=>{
+      //             // global.distribution[context.gid].comm.send([{key:nodes[2],gid:context.gid}],{node: newNode, service: 'mem', method: 'get'},(e,v)=>{
+      //               console.log(v);
+      //               count--;
+      //               console.log(e);
+      //               if (count == 0){
+      //                 callback(null,diffGroup);
+      //               }
+      //             // })
+      //           });
+      //         });
+      //       })
+      //     }
+      //   })
+      // })
     },
   };
 };

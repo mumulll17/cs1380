@@ -20,7 +20,6 @@ const log = require('../util/log.js');
  * @param {Callback} [callback]
  * @return {void}
  */
-
 function send(message, remote, callback = () => {}) {
     // console.log(1111222);
     if (typeof callback != 'function'){

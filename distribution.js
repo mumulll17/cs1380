@@ -12,6 +12,7 @@ global.nodeConfig = global.nodeConfig || {
     console.log(`Node started!`);
   },
 };
+
 /*
 You can pass "ip" and "port" arguments directly.
 Use this to startup nodes from the terminal.
@@ -28,15 +29,12 @@ if (args.port) {
 }
 
 if (args.config) {
-  console.log(args.config);
   const nodeConfig = util.deserialize(args.config);
-  console.log(nodeConfig);
   global.nodeConfig.ip = nodeConfig.ip ? nodeConfig.ip : global.nodeConfig.ip;
   global.nodeConfig.port = nodeConfig.port ?
         nodeConfig.port : global.nodeConfig.port;
   global.nodeConfig.onStart = nodeConfig.onStart ?
         nodeConfig.onStart : global.nodeConfig.onStart;
-        console.log(global.nodeConfig.onStart.toString());
 }
 
 const distribution = function(config) {
@@ -80,8 +78,6 @@ distribution['all'].store =
 
 distribution.node.config = global.nodeConfig;
 module.exports = distribution;
-
-// global.nodeConfig2 = JSON.parse(JSON.stringify(global.nodeConfig));
 
 /* The following code is run when distribution.js is run directly */
 if (require.main === module) {
