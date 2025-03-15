@@ -6,7 +6,9 @@
 const path = require('path');
 const id = require("../util/id");
 const fs = require('fs');
+const log = require("../util/log");
 const serialization = require("../util/serialization");
+const { emitKeypressEvents } = require('readline');
 // create the folder at the root folder
 const dirPath = path.resolve(process.cwd(), 'store');
 const SecondaryDirPath = path.resolve(process.cwd(), `store/${global.moreStatus['nid']}`);
@@ -138,12 +140,23 @@ function get(configuration, callback) {
       }
       if (key == null){ //if key is null
         fs.readdir(`${SecondaryDirPath}/${gid}`,(e,v)=>{
-          if (e){
+          // console.log(gid);
+          // console.log(v);
+          // log(v,"in local store get")
+          if (e && e.code != 'ENOENT'){
             callback(new Error(`error is ${e}`));
             return;
           }
-          callback(null,v);
-          return;
+          if (e && e.code == 'ENOENT'){
+            fs.mkdir(`${SecondaryDirPath}/${gid}`, (err) => {
+              console.log(SecondaryDirPath);
+              callback(null,{});
+              return;
+            })
+          }else{
+            callback(null,v);
+            return;
+          }
         })
       }else if (typeof key === "string"){
         //get the specified file;

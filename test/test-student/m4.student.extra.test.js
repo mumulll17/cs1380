@@ -8,5 +8,125 @@
 const distribution = require('../../config.js');
 
 test('(15 pts) detect the need to reconfigure', (done) => {
+    
     done(new Error('Not implemented'));
+});
+/*
+    Following is the setup for the tests.
+*/
+
+const mygroupGroup = {};
+
+/*
+   This is necessary since we can not
+   gracefully stop the local listening node.
+   This is because the process that node is
+   running in is the actual jest process
+*/
+let localServer = null;
+
+const n1 = {ip: '127.0.0.1', port: 9001};
+const n2 = {ip: '127.0.0.1', port: 9002};
+const n3 = {ip: '127.0.0.1', port: 9003};
+const n4 = {ip: '127.0.0.1', port: 9004};
+const n5 = {ip: '127.0.0.1', port: 9005};
+const n6 = {ip: '127.0.0.1', port: 9006};
+
+beforeAll((done) => {
+  // First, stop the nodes if they are running
+  const remote = {service: 'status', method: 'stop'};
+
+  const fs = require('fs');
+  const path = require('path');
+
+  fs.rmSync(path.join(__dirname, '../store'), {recursive: true, force: true});
+  fs.mkdirSync(path.join(__dirname, '../store'));
+
+  remote.node = n1;
+  distribution.local.comm.send([], remote, (e, v) => {
+    remote.node = n2;
+    distribution.local.comm.send([], remote, (e, v) => {
+      remote.node = n3;
+      distribution.local.comm.send([], remote, (e, v) => {
+        remote.node = n4;
+        distribution.local.comm.send([], remote, (e, v) => {
+          remote.node = n5;
+          distribution.local.comm.send([], remote, (e, v) => {
+            remote.node = n6;
+            distribution.local.comm.send([], remote, (e, v) => {
+              console.log(111);
+              startNodes();
+            });
+          });
+        });
+      });
+    });
+  });
+
+  const startNodes = () => {
+    console.log(2222);
+    mygroupGroup[id.getSID(n1)] = n1;
+    mygroupGroup[id.getSID(n2)] = n2;
+    mygroupGroup[id.getSID(n3)] = n3;
+    mygroupGroup[id.getSID(n4)] = n4;
+    mygroupGroup[id.getSID(n5)] = n5;
+
+    // Now, start the nodes listening node
+    distribution.node.start((server) => {
+      console.log(33333);
+      localServer = server;
+
+      const groupInstantiation = () => {
+        const mygroupConfig = {gid: 'mygroup'};
+
+        // Create the groups
+        distribution.local.groups.put(mygroupConfig, mygroupGroup, (e, v) => {
+          distribution.mygroup.groups
+              .put(mygroupConfig, mygroupGroup, (e, v) => {
+                done();
+              });
+        });
+      };
+
+      // Start the nodes
+      distribution.local.status.spawn(n1, (e, v) => {
+        distribution.local.status.spawn(n2, (e, v) => {
+          distribution.local.status.spawn(n3, (e, v) => {
+            distribution.local.status.spawn(n4, (e, v) => {
+              distribution.local.status.spawn(n5, (e, v) => {
+                distribution.local.status.spawn(n6, (e, v) => {
+                  console.log(1111111);
+                  groupInstantiation();
+                });
+              });
+            });
+          });
+        });
+      });
+    });
+  };
+});
+
+afterAll((done) => {
+  const remote = {service: 'status', method: 'stop'};
+  remote.node = n1;
+  distribution.local.comm.send([], remote, (e, v) => {
+    remote.node = n2;
+    distribution.local.comm.send([], remote, (e, v) => {
+      remote.node = n3;
+      distribution.local.comm.send([], remote, (e, v) => {
+        remote.node = n4;
+        distribution.local.comm.send([], remote, (e, v) => {
+          remote.node = n5;
+          distribution.local.comm.send([], remote, (e, v) => {
+            remote.node = n6;
+            distribution.local.comm.send([], remote, (e, v) => {
+              localServer.close();
+              done();
+            });
+          });
+        });
+      });
+    });
+  });
 });

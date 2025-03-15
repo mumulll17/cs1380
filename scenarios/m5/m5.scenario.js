@@ -93,11 +93,25 @@ test('(10 pts) (scenario) all.mr:dlib', (done) => {
    The reduce function should return the count of each word.
 */
 
-  const mapper = (key, value) => {
-  };
+const mapper = (key, value) => {
+  const words = value.split(" ");
+  const out = [];
+  for (let word of words){
+    if (word!=""){
+      let obj = {};
+      obj[word] = 1;
+      out.push(obj);
+    }
+  }
+  return out;
+};
 
-  const reducer = (key, values) => {
-  };
+const reducer = (key, values) => {
+  const out = {};
+  out[key] = values.reduce((acc,cur)=>acc+cur,0);
+  return out;
+};
+
 
   const dataset = [
     {'b1-l1': 'It was the best of times, it was the worst of times,'},
@@ -156,38 +170,66 @@ test('(10 pts) (scenario) all.mr:dlib', (done) => {
   });
 });
 
-test('(10 pts) (scenario) all.mr:tfidf', (done) => {
+test.only('(10 pts) (scenario) all.mr:tfidf', (done) => {
 /*
     Implement the map and reduce functions.
     The map function should parse the string value and return an object with the word as the key and the document and count as the value.
     The reduce function should return the TF-IDF for each word.
+
+    Hint:
+    TF = (Number of times the term appears in a document) / (Total number of terms in the document)
+    IDF = log10(Total number of documents / Number of documents with the term in it)
+    TF-IDF = TF * IDF
 */
 
-  const mapper = (key, value) => {
-  };
 
-  // Reduce function: calculate TF-IDF for each word
-  const reducer = (key, values) => {
-  };
+const mapper = (key, value) => {
+  const words = value.split(" ");
+  const out = [];
+  const map = {};
 
+  for (let word of words){
+    if (!map.hasOwnProperty(word)){
+      map[word] = 1;
+    } else {
+      map[word]+=1;
+    }
+  }
+  for (let key1 of Object.keys(map)){
+    let obj = {};
+    obj[key1] = [key,map[key1],words.length];
+    out.push(obj);
+  }
+  return out;
+};
+
+// Reduce function: calculate TF-IDF for each word
+const reducer = (key, values) => {
+  const map = {};
+  const IDF = Math.log10(3/(values.length/3));
+  for (let i = 0;i < values.length/3;i++){
+    let ind = i*3;
+    const TF = values[ind+1]/values[ind+2];
+    map[values[ind]] = Number((TF*IDF).toFixed(2));
+  }
+  const out = {};
+  out[key] = map;
+  return out;
+};
   const dataset = [
     {'doc1': 'machine learning is amazing'},
     {'doc2': 'deep learning powers amazing systems'},
     {'doc3': 'machine learning and deep learning are related'},
   ];
 
-  const expected = [
-    {'machine': {'doc1': '0.20', 'doc3': '0.20'}},
-    {'learning': {'doc1': '0.00', 'doc2': '0.00', 'doc3': '0.00'}},
-    {'is': {'doc1': '1.10'}},
-    {'amazing': {'doc1': '0.20', 'doc2': '0.20'}},
-    {'deep': {'doc2': '0.20', 'doc3': '0.20'}},
-    {'powers': {'doc2': '1.10'}},
-    {'systems': {'doc2': '1.10'}},
-    {'and': {'doc3': '1.10'}},
-    {'are': {'doc3': '1.10'}},
-    {'related': {'doc3': '1.10'}},
-  ];
+  const expected = [{'is': {'doc1': 0.12}},
+    {'deep': {'doc2': 0.04, 'doc3': 0.03}},
+    {'systems': {'doc2': 0.1}},
+    {'learning': {'doc1': 0, 'doc2': 0, 'doc3': 0}},
+    {'amazing': {'doc1': 0.04, 'doc2': 0.04}},
+    {'machine': {'doc1': 0.04, 'doc3': 0.03}},
+    {'are': {'doc3': 0.07}}, {'powers': {'doc2': 0.1}},
+    {'and': {'doc3': 0.07}}, {'related': {'doc3': 0.07}}];
 
   const doMapReduce = (cb) => {
     distribution.tfidf.store.get(null, (e, v) => {
@@ -233,23 +275,35 @@ test('(10 pts) (scenario) all.mr:tfidf', (done) => {
 */
 
 test('(10 pts) (scenario) all.mr:crawl', (done) => {
-    done(new Error('Implement this test.'));
+  
 });
 
 test('(10 pts) (scenario) all.mr:urlxtr', (done) => {
-    done(new Error('Implement the map and reduce functions'));
+  // __start_solution__
+  // __end_solution__
+  // __start_solution__
+  // __end_solution__
 });
 
 test('(10 pts) (scenario) all.mr:strmatch', (done) => {
-    done(new Error('Implement the map and reduce functions'));
+  // __start_solution__
+  // __end_solution__
+  // __start_solution__
+  // __end_solution__
 });
 
 test('(10 pts) (scenario) all.mr:ridx', (done) => {
-    done(new Error('Implement the map and reduce functions'));
+  // __start_solution__
+  // __end_solution__
+  // __start_solution__
+  // __end_solution__
 });
 
 test('(10 pts) (scenario) all.mr:rlg', (done) => {
-    done(new Error('Implement the map and reduce functions'));
+  // __start_solution__
+  // __end_solution__
+  // __start_solution__
+  // __end_solution__
 });
 
 /*

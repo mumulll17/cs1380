@@ -164,3 +164,35 @@ It took about three seconds to spawn five nodes, and they are tested in my stude
 > What is the point of having a gossip protocol? Why doesn't a node just send the message to _all_ other nodes in its group?
 
 It makes the scale smaller, so it can be more affordable. Similarly, it is more efficient
+
+# M4: Distributed Storage
+
+
+## Summary
+
+> Summarize your implementation, including key challenges you encountered
+
+I have done all required parts and two extra credit, ec1 and ec2. This project is about how to store things in the distributed system. Key challenges are many bugs in the way of implementing the second extra credit and many coding decision I have to make during the process. 
+
+Remember to update the `report` section of the `package.json` file with the total number of hours it took you to complete each task of M4 (`hours`) and the lines of code per task.
+
+
+## Correctness & Performance Characterization
+
+> Describe how you characterized the correctness and performance of your implementation
+
+
+*Correctness* -- number of tests and time they take.
+I implemented 5 student test and they took 12.621 second. For all other tests I passed, they took about 2 minutes.
+
+*Performance* -- insertion and retrieval.
+
+Insertion of 1000 nodes to three AWS remote nodes takes about 7367 millisecond, and throuput:0.135734828722023, latency:7.367305866999999
+retrieval of 1000 nodes to three AWS remote nodes takes about 7301 millisecond, and throuput:0.1369512220272375, latency:7.301869857000001
+
+
+## Key Feature
+
+> Why is the `reconf` method designed to first identify all the keys to be relocated and then relocate individual objects instead of fetching all the objects immediately and then pushing them to their corresponding locations?
+
+I guess the reason is that the group and nodes inside have changed, and it will be problemetic to just fetch all current objects without considering what could be affected by the changes.

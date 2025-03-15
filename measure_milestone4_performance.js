@@ -2,7 +2,6 @@ const { count } = require('yargs');
 const distribution = require('./config');
 const id = distribution.util.id;
 
-const user = [];
 function generateRandomName() {
     const chars = 'abcdefghijklmnopqrstuvwxyz';
     const randomString = (length) => Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('');

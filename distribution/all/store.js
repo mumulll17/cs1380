@@ -1,5 +1,6 @@
 const comm = require("../local/comm");
 const id = require("../util/id");
+
 function getNodes(context){
   //my function to get the nodes from the group
   const nodes = {};
@@ -27,8 +28,8 @@ function store(config) {
   return {
     get: (configuration, callback) => {
       if (configuration == null){
-        global.distribution[context.gid].comm.send([{key:null}],{service:'store',method:'get'},(e,v)=>{
-
+        global.distribution[context.gid].comm.send([{key:null,gid:context.gid}],{service:'store',method:'get'},(e,v)=>{
+          console.log(v);
           const res = {};
           const vals = Object.values(v).flat();
           let count = 0;
