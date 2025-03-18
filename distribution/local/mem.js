@@ -101,5 +101,36 @@ function del(configuration, callback) {
     callback(new Error("Input configuration is wrong (not a string, not a null, not an object)"));
     return;
 };
-
-module.exports = {put, get, del};
+function append(state,configuration,callback){
+    if (typeof configuration === "string" || configuration == null){
+        configuration = {key:configuration};
+    }
+    if (configuration instanceof Object){
+        if (configuration.hasOwnProperty("key")){
+            if (configuration.hasOwnProperty("gid") && configuration.gid!='all'){ //get the gid if it has one
+                let gid = configuration.gid;
+                if (!global.memMap.hasOwnProperty(gid)){
+                    global.memMap[gid] = {};
+                }
+                if (!global.memMap[gid].hasOwnProperty(key)){
+                    global.memMap[gid][key] = [];
+                }
+                global.memMap[gid][key].push(state);
+                callback(null,global.memMap[gid][key]);
+                return;
+            }else{
+                if (!global.memMa['all'].hasOwnProperty(key)){
+                    global.memMap['all'][key] = {};
+                }
+                global.memMap['all'][key].push(state);
+                callback(null,global.memMap['all'][key]);
+                return;
+            }
+        }
+        callback(new Error("Wrong object in local mem append"));
+        return;
+    }
+    callback(new Error("Input configuration is wrong (not a string, not a null, not an object)"));
+    return;
+}
+module.exports = {put, get, del,append};

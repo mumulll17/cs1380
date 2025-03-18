@@ -200,6 +200,7 @@ const mapper = (key, value) => {
     obj[key1] = [key,map[key1],words.length];
     out.push(obj);
   }
+  console.log(out);
   return out;
 };
 

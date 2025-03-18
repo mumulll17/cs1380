@@ -13,8 +13,8 @@ const { emitKeypressEvents } = require('readline');
 const dirPath = path.resolve(process.cwd(), 'store');
 const SecondaryDirPath = path.resolve(process.cwd(), `store/${global.moreStatus['nid']}`);
 const AllPath = path.resolve(process.cwd(), `${SecondaryDirPath}/all`);
-console.log(SecondaryDirPath);
-console.log(AllPath);
+// console.log(SecondaryDirPath);
+// console.log(AllPath);
 function init(callback){
   fs.mkdir(dirPath, (err) => {
     if (err) {

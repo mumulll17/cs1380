@@ -11,10 +11,10 @@ const cfreqGroup = {};
 let localServer = null;
 
 const n1 = {ip: '127.0.0.1', port: 7110};
-const n2 = {ip: '127.0.0.1', port: 7111};
-const n3 = {ip: '127.0.0.1', port: 7112};
+const n3 = {ip: '127.0.0.1', port: 7111};
+const n2 = {ip: '127.0.0.1', port: 7113};
 
-test('(20 pts) all.mr:ncdc', (done) => {
+test.only('(20 pts) all.mr:ncdc', (done) => {
   const mapper = (key, value) => {
     const words = value.split(/(\s+)/).filter((e) => e !== ' ');
     const out = {};
@@ -204,11 +204,15 @@ beforeAll((done) => {
   cfreqGroup[id.getSID(n2)] = n2;
   cfreqGroup[id.getSID(n3)] = n3;
 
-
+  console.log(1111);
   const startNodes = (cb) => {
+    console.log(2222);
     distribution.local.status.spawn(n1, (e, v) => {
+      console.log(3);
       distribution.local.status.spawn(n2, (e, v) => {
+        console.log(4);
         distribution.local.status.spawn(n3, (e, v) => {
+          console.log(5);
           cb();
         });
       });
@@ -221,6 +225,7 @@ beforeAll((done) => {
     const ncdcConfig = {gid: 'ncdc'};
     startNodes(() => {
       distribution.local.groups.put(ncdcConfig, ncdcGroup, (e, v) => {
+        console.log(v);
         distribution.ncdc.groups.put(ncdcConfig, ncdcGroup, (e, v) => {
           const avgwrdlConfig = {gid: 'avgwrdl'};
           distribution.local.groups.put(avgwrdlConfig, avgwrdlGroup, (e, v) => {

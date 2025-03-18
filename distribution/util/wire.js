@@ -54,8 +54,9 @@ function toAsync(func) {
   return asyncFunc;
 }
 
+// module.exports = require('@brown-ds/distribution/distribution/util/wire');
+
 module.exports = {
-  createRPC: createRPC,
-  toAsync: toAsync,
-  // toLocal: toLocal,
+  createRPC,
+  toAsync,
 };

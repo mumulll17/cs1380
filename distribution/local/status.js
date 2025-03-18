@@ -5,7 +5,7 @@ const serialization = require('../util/serialization');
 const status = {};
 const child_process = require('child_process');
 const path = require('path');
-// const log = require('../util/log.js');
+const log = require('../util/log.js');
 // const { node } = require('@brown-ds/distribution');
 // status.spawn = require('@brown-ds/distribution/distribution/local/status').spawn; 
 // status.stop = require('@brown-ds/distribution/distribution/local/status').stop; 
@@ -74,6 +74,7 @@ status.spawn = function(configuration, callback) {
   // console.log(serialized);
   // console.log("before spawn");
   const newPath = path.join(__dirname,'../../distribution.js');
+  log(global.distribution.node.config.ip,'instatusspawn');
   // const child = child_process.spawn('node',[`${newPath}`, '--config', serialized],{detached:true,stdio:"inherit"});
   const child = child_process.spawn('node',[`${newPath}`, '--config', serialized]);
   child.on('error', (err)=>{
@@ -92,5 +93,5 @@ status.stop = function(callback) {
   process.exit();
 
 };
-
 module.exports = status;
+// module.exports = require('@brown-ds/distribution/distribution/local/status');

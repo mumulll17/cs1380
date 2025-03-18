@@ -106,6 +106,18 @@ function mem(config) {
       // console.log(hashedConfig);
       comm.send([{key:configuration,gid:context.gid}],remote,callback);
     },
+    append:(state, configuration, callback) => {
+      let hashedConfig = id.getID(configuration);
+      const nodes = getNodes(context);
+      let nids = {}; //map match nid to node
+      for (let node of Object.values(nodes)){
+        nids[id.getNID(node)] = node;
+      }
+      let nid = context.hash(hashedConfig,Object.keys(nids));
+      let node = nids[nid];
+      const remote = {node: node, service: 'mem', method: 'append'};
+      comm.send([state,{key:configuration,gid:context.gid}],remote,callback);
+    },
 
     reconf: (configuration, callback) => {
       // first remove the new group

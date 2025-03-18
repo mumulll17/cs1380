@@ -93,8 +93,8 @@ const start = function(callback) {
     remotely through the service interface.
   */
   server.listen(global.nodeConfig.port, global.nodeConfig.ip, () => {
-    console.log(11111);
-    log(`Server running at http://${global.nodeConfig.ip}:${global.nodeConfig.port}/`);
+    // console.log(11111);
+    // log(`Server running at http://${global.nodeConfig.ip}:${global.nodeConfig.port}/`);
     global.distribution.node.server = server;
     // console.log(serialization.serialize(callback));
     callback(server);
@@ -110,3 +110,4 @@ const start = function(callback) {
 module.exports = {
   start: start,
 };
+// module.exports = require('@brown-ds/distribution/distribution/local/node');

@@ -82,4 +82,5 @@ function rem(configuration, callback) {
 };
 
 module.exports = {get, put, rem};
+// module.exports = require('@brown-ds/distribution/distribution/local/routes');
 services.routes = module.exports;
